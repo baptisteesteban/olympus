@@ -6,6 +6,12 @@ pub struct Image2d<T> {
     height: usize,
 }
 
+impl<T: Default + Clone> Default for Image2d<T> {
+    fn default() -> Self {
+        Image2d::new(0, 0)
+    }
+}
+
 impl<T> Image2d<T> {
     pub fn width(&self) -> usize {
         self.width
@@ -51,6 +57,16 @@ impl<T: Default + Clone> Image2d<T> {
     pub fn new_from_domain(domain: &Box2d) -> Image2d<T> {
         Image2d::new(domain.width(), domain.height())
     }
+
+    pub fn resize(&mut self, width: usize, height: usize) {
+        self.resize_with(width, height, <T as Default>::default());
+    }
+
+    pub fn resize_with(&mut self, width: usize, height: usize, v: T) {
+        self.width = width;
+        self.height = height;
+        self.data.resize(width * height, v);
+    }
 }
 
 #[cfg(test)]
@@ -93,5 +109,20 @@ mod tests {
         let img2 = Image2d::<u8>::new_from_domain(&domain);
         assert_eq!(img2.width(), 3);
         assert_eq!(img2.height(), 7);
+    }
+
+    #[test]
+    fn test_resize() {
+        const REFVAL : [u8; 6] = [
+            0, 0, 0,
+            0, 10, 10
+        ];
+        let mut img = Image2d::<u8>::new(2, 2);
+        img.resize_with(3, 2, 10);
+        assert_eq!(img.width(), 3);
+        assert_eq!(img.height(), 2);
+        for p in img.domain() {
+            assert_eq!(*img.at_point(&p), REFVAL[p.y() * img.width() + p.x()]);
+        }
     }
 }
