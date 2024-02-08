@@ -5,7 +5,7 @@ use image::DynamicImage;
 mod internals {
     use std::ops::Deref;
 
-    use image::{ImageBuffer, Luma, Primitive, GenericImageView};
+    use image::{ImageBuffer, Luma, Primitive};
     use crate::Image2d;
 
     pub fn read_luma<V: Clone + Default + Primitive, Cont: Deref<Target = [V]>>(img: &mut Image2d<V>, buffer: ImageBuffer<Luma<V>, Cont>) {
@@ -18,12 +18,18 @@ mod internals {
     }
 }
 
-pub fn imread(img: &mut Image2d<u8>, filename: &str) -> Result<(), &'static str> {
-    let rimg = image::open(filename).expect("Image reader error");
-    match rimg {
-        DynamicImage::ImageLuma8(buffer) => internals::read_luma(img, buffer),
-        _ => { return Err("Only u8 images are handled"); }
-    }
+pub fn imread(img: &mut Image2d<u8>, filename: &str) -> Result<(), String> {
+    let attempt_read = image::open(filename);
+    match attempt_read {
+        Ok(rimg) => {
+            match rimg {
+                DynamicImage::ImageLuma8(buffer) => internals::read_luma(img, buffer),
+                _ => return Err(String::from("Only u8 images are handled"))
+            }
+        },
+        Err(e) => return Err(format!("Unable to read the image {}: {}", filename, e))
+    };
+
     Ok(())
 }
 
