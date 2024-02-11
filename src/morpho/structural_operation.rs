@@ -6,7 +6,7 @@ use crate::{
 };
 
 mod internals {
-    use crate::{accu::Accumulator, Image2d, StructuringElement2d};
+    use crate::{accu::Accumulator, traits::Domain, Image2d, StructuringElement2d};
 
     pub(crate) fn structural_operation<T, A>(
         img: &Image2d<T>,

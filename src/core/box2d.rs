@@ -1,4 +1,7 @@
-use crate::Point2d;
+use crate::{
+    traits::{Domain, ShapedDomain, SizedDomain},
+    Point2d,
+};
 
 pub struct Box2d {
     width: i32,
@@ -20,9 +23,37 @@ impl Box2d {
     pub fn height(&self) -> i32 {
         self.height
     }
+}
 
-    pub fn has(&self, p: &Point2d) -> bool {
+impl Domain for Box2d {
+    type Point = Point2d;
+
+    fn has(&self, p: &Self::Point) -> bool {
         p.x() >= 0 && p.y() >= 0 && p.x() < self.width && p.y() < self.height()
+    }
+}
+
+impl SizedDomain for Box2d {
+    fn size(&self) -> i32 {
+        self.width * self.height
+    }
+}
+
+impl ShapedDomain for Box2d {
+    const N: usize = 2;
+
+    fn shape(&self, i: usize) -> Result<i32, String> {
+        if i == 0 {
+            Ok(self.width)
+        } else if i == 1 {
+            Ok(self.height)
+        } else {
+            Err(format!(
+                "Index i ({}) out of range (should be in [0 - {}[)",
+                i,
+                Self::N
+            ))
+        }
     }
 }
 

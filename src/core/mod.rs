@@ -4,6 +4,7 @@ mod image2d;
 mod point2d;
 mod rgb;
 mod se2d;
+pub mod traits;
 
 pub use box2d::*;
 pub use copy::copy;
