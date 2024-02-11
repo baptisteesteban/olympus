@@ -1,10 +1,10 @@
-pub trait Domain {
+pub trait Domain: PartialEq {
     type Point;
 
     fn has(&self, p: &Self::Point) -> bool;
 }
 
-pub trait SizedDomain: Domain + IntoIterator {
+pub trait SizedDomain: Domain + IntoIterator<Item = Self::Point> {
     fn size(&self) -> i32;
 }
 

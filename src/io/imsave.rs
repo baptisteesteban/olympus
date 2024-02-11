@@ -5,7 +5,7 @@ use crate::Image2d;
 mod internals {
     use std::ops::DerefMut;
 
-    use crate::Image2d;
+    use crate::{traits::Image, Image2d};
     use image::{ImageBuffer, Luma, Primitive};
 
     pub fn write_luma<V: Clone + Default + Primitive, Cont: DerefMut<Target = [V]>>(
@@ -31,6 +31,7 @@ pub fn imsave(img: &Image2d<u8>, filename: &str) -> Result<(), String> {
 mod tests {
     use crate::{
         io::{imread, imsave},
+        traits::{Image, MutableImage},
         Image2d,
     };
 

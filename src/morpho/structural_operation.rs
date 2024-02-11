@@ -6,7 +6,11 @@ use crate::{
 };
 
 mod internals {
-    use crate::{accu::Accumulator, traits::Domain, Image2d, StructuringElement2d};
+    use crate::{
+        accu::Accumulator,
+        traits::{Domain, Image, MutableImage},
+        Image2d, StructuringElement2d,
+    };
 
     pub(crate) fn structural_operation<T, A>(
         img: &Image2d<T>,
@@ -64,7 +68,11 @@ where
 
 #[cfg(test)]
 mod tests {
-    use crate::{morpho::dilation, Image2d, StructuringElement2d};
+    use crate::{
+        morpho::dilation,
+        traits::{Image, MutableImage},
+        Image2d, StructuringElement2d,
+    };
 
     #[test]
     fn test_dilation() {

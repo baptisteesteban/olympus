@@ -66,6 +66,12 @@ impl IntoIterator for Box2d {
     }
 }
 
+impl PartialEq for Box2d {
+    fn eq(&self, other: &Self) -> bool {
+        self.width == other.width && self.height == other.height
+    }
+}
+
 pub struct Point2dIterator {
     cur: Option<Point2d>,
     domain: Box2d,
@@ -77,12 +83,6 @@ impl Point2dIterator {
             cur: None,
             domain: domain,
         }
-    }
-}
-
-impl PartialEq for Box2d {
-    fn eq(&self, other: &Self) -> bool {
-        self.width == other.width && self.height == other.height
     }
 }
 

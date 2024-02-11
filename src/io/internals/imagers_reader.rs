@@ -2,7 +2,10 @@ use std::{any::Any, ops::Deref};
 
 use image::{ImageBuffer, Luma, Primitive};
 
-use crate::Image2d;
+use crate::{
+    traits::{Image, MutableImage},
+    Image2d,
+};
 
 pub(crate) trait ImagersReader {
     fn read(&mut self) -> Result<(), String>;

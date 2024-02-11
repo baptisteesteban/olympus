@@ -1,4 +1,7 @@
-use crate::{Box2d, Point2d};
+use crate::{
+    traits::{Domain, Image, MutableImage},
+    Box2d,
+};
 
 pub struct Image2d<T> {
     data: Vec<T>,
@@ -32,17 +35,25 @@ impl<T> Image2d<T> {
             .get_mut((y * self.width + x) as usize)
             .expect("Invalid index")
     }
+}
 
-    pub fn at_point(&self, p: &Point2d) -> &T {
+impl<T> Image for Image2d<T> {
+    type Domain = Box2d;
+    type Value = T;
+    type Point = <Self::Domain as Domain>::Point;
+
+    fn domain(&self) -> Self::Domain {
+        Self::Domain::new(self.width, self.height)
+    }
+
+    fn at_point(&self, p: &Self::Point) -> &Self::Value {
         self.at(p.x(), p.y())
     }
+}
 
-    pub fn at_point_mut(&mut self, p: &Point2d) -> &mut T {
+impl<T> MutableImage for Image2d<T> {
+    fn at_point_mut(&mut self, p: &Self::Point) -> &mut Self::Value {
         self.at_mut(p.x(), p.y())
-    }
-
-    pub fn domain(&self) -> Box2d {
-        Box2d::new(self.width, self.height)
     }
 }
 
@@ -73,7 +84,7 @@ impl<T: Default + Clone> Image2d<T> {
 
 #[cfg(test)]
 mod tests {
-    use crate::{Image2d, Point2d};
+    use crate::{traits::Image, Image2d, Point2d};
 
     #[test]
     fn test_image_creation() {

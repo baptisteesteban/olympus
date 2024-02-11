@@ -56,7 +56,7 @@ pub fn imread<V: Copy + Default + 'static>(
 
 #[cfg(test)]
 mod tests {
-    use crate::{io::imread, Image2d};
+    use crate::{io::imread, traits::Image, Image2d};
 
     #[test]
     fn test_read_pgm_u8() {
