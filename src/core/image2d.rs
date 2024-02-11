@@ -2,8 +2,8 @@ use crate::{Box2d, Point2d};
 
 pub struct Image2d<T> {
     data: Vec<T>,
-    width: usize,
-    height: usize,
+    width: i32,
+    height: i32,
 }
 
 impl<T: Default + Clone> Default for Image2d<T> {
@@ -13,21 +13,23 @@ impl<T: Default + Clone> Default for Image2d<T> {
 }
 
 impl<T> Image2d<T> {
-    pub fn width(&self) -> usize {
+    pub fn width(&self) -> i32 {
         self.width
     }
 
-    pub fn height(&self) -> usize {
+    pub fn height(&self) -> i32 {
         self.height
     }
 
-    pub fn at(&self, x: usize, y: usize) -> &T {
-        self.data.get(y * self.width + x).expect("Invalid index")
+    pub fn at(&self, x: i32, y: i32) -> &T {
+        self.data
+            .get((y * self.width + x) as usize)
+            .expect("Invalid index")
     }
 
-    pub fn at_mut(&mut self, x: usize, y: usize) -> &mut T {
+    pub fn at_mut(&mut self, x: i32, y: i32) -> &mut T {
         self.data
-            .get_mut(y * self.width + x)
+            .get_mut((y * self.width + x) as usize)
             .expect("Invalid index")
     }
 
@@ -45,8 +47,8 @@ impl<T> Image2d<T> {
 }
 
 impl<T: Default + Clone> Image2d<T> {
-    pub fn new(width: usize, height: usize) -> Image2d<T> {
-        let vec = vec![<T as Default>::default(); width * height];
+    pub fn new(width: i32, height: i32) -> Image2d<T> {
+        let vec = vec![<T as Default>::default(); (width * height) as usize];
         return Image2d {
             data: vec,
             width: width,
@@ -58,14 +60,14 @@ impl<T: Default + Clone> Image2d<T> {
         Image2d::new(domain.width(), domain.height())
     }
 
-    pub fn resize(&mut self, width: usize, height: usize) {
+    pub fn resize(&mut self, width: i32, height: i32) {
         self.resize_with(width, height, <T as Default>::default());
     }
 
-    pub fn resize_with(&mut self, width: usize, height: usize, v: T) {
+    pub fn resize_with(&mut self, width: i32, height: i32, v: T) {
         self.width = width;
         self.height = height;
-        self.data.resize(width * height, v);
+        self.data.resize((width * height) as usize, v);
     }
 }
 
@@ -119,7 +121,10 @@ mod tests {
         assert_eq!(img.width(), 3);
         assert_eq!(img.height(), 2);
         for p in img.domain() {
-            assert_eq!(*img.at_point(&p), REFVAL[p.y() * img.width() + p.x()]);
+            assert_eq!(
+                *img.at_point(&p),
+                REFVAL[(p.y() * img.width() + p.x()) as usize]
+            );
         }
     }
 }

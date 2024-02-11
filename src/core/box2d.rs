@@ -1,24 +1,28 @@
 use crate::Point2d;
 
 pub struct Box2d {
-    width: usize,
-    height: usize,
+    width: i32,
+    height: i32,
 }
 
 impl Box2d {
-    pub fn new(width: usize, height: usize) -> Box2d {
+    pub fn new(width: i32, height: i32) -> Box2d {
         Box2d {
             width: width,
             height: height,
         }
     }
 
-    pub fn width(&self) -> usize {
+    pub fn width(&self) -> i32 {
         self.width
     }
 
-    pub fn height(&self) -> usize {
+    pub fn height(&self) -> i32 {
         self.height
+    }
+
+    pub fn has(&self, p: &Point2d) -> bool {
+        p.x() >= 0 && p.y() >= 0 && p.x() < self.width && p.y() < self.height()
     }
 }
 

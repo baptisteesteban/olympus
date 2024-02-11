@@ -71,7 +71,10 @@ mod tests {
         assert_eq!(img.height(), 2);
 
         for p in img.domain() {
-            assert_eq!(*img.at_point(&p), REFVAL[p.y() * img.width() + p.x()]);
+            assert_eq!(
+                *img.at_point(&p),
+                REFVAL[(p.y() * img.width() + p.x()) as usize]
+            );
         }
     }
 
@@ -86,7 +89,10 @@ mod tests {
         assert_eq!(img.height(), 3);
 
         for p in img.domain() {
-            assert_eq!(*img.at_point(&p), REFVAL[p.y() * img.width() + p.x()]);
+            assert_eq!(
+                *img.at_point(&p),
+                REFVAL[(p.y() * img.width() + p.x()) as usize]
+            );
         }
     }
 }

@@ -36,12 +36,12 @@ mod tests {
 
     #[test]
     fn test_read_save_pgm_u8() {
-        const WIDTH: usize = 4;
-        const HEIGHT: usize = 2;
+        const WIDTH: i32 = 4;
+        const HEIGHT: i32 = 2;
         const REFVAL: [u8; 8] = [4, 3, 9, 67, 43, 125, 253, 37];
         let mut in_img = Image2d::<u8>::new(WIDTH, HEIGHT);
         for p in in_img.domain() {
-            *in_img.at_point_mut(&p) = REFVAL[p.y() * in_img.width() + p.x()];
+            *in_img.at_point_mut(&p) = REFVAL[(p.y() * in_img.width() + p.x()) as usize];
         }
         let path = "/tmp/test_img.pgm";
         imsave(&in_img, path).unwrap();

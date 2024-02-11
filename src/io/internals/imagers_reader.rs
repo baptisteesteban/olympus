@@ -38,7 +38,7 @@ where
             None => return Err(String::from("Invalid conversion (should not happen)")),
         };
         let (width, height) = self.rs_img.dimensions();
-        img.resize(width as usize, height as usize);
+        img.resize(width as i32, height as i32);
         for p in img.domain() {
             *img.at_point_mut(&p) = self.rs_img.get_pixel(p.x() as u32, p.y() as u32).0[0];
         }
