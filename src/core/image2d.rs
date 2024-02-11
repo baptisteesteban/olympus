@@ -113,10 +113,7 @@ mod tests {
 
     #[test]
     fn test_resize() {
-        const REFVAL : [u8; 6] = [
-            0, 0, 0,
-            0, 10, 10
-        ];
+        const REFVAL: [u8; 6] = [0, 0, 0, 0, 10, 10];
         let mut img = Image2d::<u8>::new(2, 2);
         img.resize_with(3, 2, 10);
         assert_eq!(img.width(), 3);

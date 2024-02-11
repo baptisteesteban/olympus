@@ -45,6 +45,12 @@ impl Point2dIterator {
     }
 }
 
+impl PartialEq for Box2d {
+    fn eq(&self, other: &Self) -> bool {
+        self.width == other.width && self.height == other.height
+    }
+}
+
 impl Iterator for Point2dIterator {
     type Item = Point2d;
 

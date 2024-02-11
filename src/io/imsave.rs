@@ -5,10 +5,13 @@ use crate::Image2d;
 mod internals {
     use std::ops::DerefMut;
 
-    use image::{ImageBuffer, Luma, Primitive};
     use crate::Image2d;
+    use image::{ImageBuffer, Luma, Primitive};
 
-    pub fn write_luma<V: Clone + Default + Primitive, Cont: DerefMut<Target = [V]>>(img: &Image2d<V>, buffer: &mut ImageBuffer<Luma<V>, Cont>) {
+    pub fn write_luma<V: Clone + Default + Primitive, Cont: DerefMut<Target = [V]>>(
+        img: &Image2d<V>,
+        buffer: &mut ImageBuffer<Luma<V>, Cont>,
+    ) {
         for p in img.domain() {
             *buffer.get_pixel_mut(p.x() as u32, p.y() as u32) = Luma([*img.at_point(&p)]);
         }
@@ -26,16 +29,16 @@ pub fn imsave(img: &Image2d<u8>, filename: &str) -> Result<(), String> {
 
 #[cfg(test)]
 mod tests {
-    use crate::{io::{imread, imsave}, Image2d};
+    use crate::{
+        io::{imread, imsave},
+        Image2d,
+    };
 
     #[test]
     fn test_read_save_pgm_u8() {
         const WIDTH: usize = 4;
         const HEIGHT: usize = 2;
-        const REFVAL : [u8; 8] = [
-            4, 3, 9, 67,
-            43, 125, 253, 37
-        ];
+        const REFVAL: [u8; 8] = [4, 3, 9, 67, 43, 125, 253, 37];
         let mut in_img = Image2d::<u8>::new(WIDTH, HEIGHT);
         for p in in_img.domain() {
             *in_img.at_point_mut(&p) = REFVAL[p.y() * in_img.width() + p.x()];
