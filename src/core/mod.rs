@@ -10,4 +10,4 @@ pub use copy::copy;
 pub use image2d::*;
 pub use point2d::*;
 pub use rgb::*;
-pub use se2d::StructuringElement2d;
+pub use se2d::*;

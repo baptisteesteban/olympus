@@ -40,6 +40,46 @@ impl StructuringElement2d {
     }
 }
 
+pub fn rect2d(width: i32, height: i32) -> Result<StructuringElement2d, String> {
+    StructuringElement2d::new(width, height, vec![true; (width * height) as usize])
+}
+
+pub fn cross2d(width: i32, height: i32) -> Result<StructuringElement2d, String> {
+    let mut mask = Vec::<bool>::with_capacity((width * height) as usize);
+    let x_center = width / 2 + 1;
+    let y_center = height / 2 + 1;
+    for y in 0..height {
+        for x in 0..width {
+            if x == x_center || y == y_center {
+                mask.push(true);
+            } else {
+                mask.push(false)
+            }
+        }
+    }
+    StructuringElement2d::new(width, height, mask)
+}
+
+pub fn disk2d(radius: i32) -> Result<StructuringElement2d, String> {
+    let size = radius * 2 + 1;
+    let x_center = radius + 1;
+    let y_center = radius + 1;
+    let radius2 = radius * radius;
+    let mut mask = Vec::<bool>::with_capacity((size * size) as usize);
+    for y in 0..size {
+        for x in 0..size {
+            let a = x_center - x;
+            let b = y_center - y;
+            if a * a + b * b < radius2 {
+                mask.push(true);
+            } else {
+                mask.push(false);
+            }
+        }
+    }
+    StructuringElement2d::new(size, size, mask)
+}
+
 #[cfg(test)]
 mod tests {
     use crate::Point2d;
