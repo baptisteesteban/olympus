@@ -1,44 +1,51 @@
 use num::Bounded;
 
-use crate::{Image2d, StructuringElement2d};
+use crate::{
+    accu::{Accumulator, InfAccumulator, SupAccumulator},
+    Image2d, StructuringElement2d,
+};
 
-fn structural_operation<T, F>(
-    img: &Image2d<T>,
-    se: &StructuringElement2d,
-    op: F,
-    zero: T,
-) -> Image2d<T>
-where
-    T: Default + Copy,
-    F: Fn(T, T) -> T,
-{
-    let mut out = Image2d::new(img.width(), img.height());
+mod internals {
+    use crate::{accu::Accumulator, Image2d, StructuringElement2d};
 
-    let domain = img.domain();
-    for p in img.domain() {
-        *out.at_point_mut(&p) = zero;
-        for q in se.apply(&p) {
-            if domain.has(&q) {
-                *out.at_point_mut(&p) = op(*out.at_point(&p), *img.at_point(&q))
+    pub(crate) fn structural_operation<T, A>(
+        img: &Image2d<T>,
+        se: &StructuringElement2d,
+        mut accu: A,
+    ) -> Image2d<T>
+    where
+        T: Default + Copy,
+        A: Accumulator<Input = T, Output = T>,
+    {
+        let mut out = Image2d::<T>::new(img.width(), img.height());
+
+        let domain = img.domain();
+        for p in img.domain() {
+            accu.init();
+            for q in se.apply(&p) {
+                if domain.has(&q) {
+                    accu.take(*img.at_point(&q));
+                }
             }
+            *out.at_point_mut(&p) = accu.result();
         }
-    }
 
-    out
+        out
+    }
 }
 
 pub fn erosion<T>(img: &Image2d<T>, se: &StructuringElement2d) -> Image2d<T>
 where
     T: Default + Copy + Ord + Bounded,
 {
-    structural_operation(&img, se, std::cmp::min, T::max_value())
+    internals::structural_operation(&img, se, InfAccumulator::new())
 }
 
 pub fn dilation<T>(img: &Image2d<T>, se: &StructuringElement2d) -> Image2d<T>
 where
     T: Default + Copy + Ord + Bounded,
 {
-    structural_operation(&img, se, std::cmp::max, T::min_value())
+    internals::structural_operation(&img, se, SupAccumulator::new())
 }
 
 pub fn opening<T>(img: &Image2d<T>, se: &StructuringElement2d) -> Image2d<T>
