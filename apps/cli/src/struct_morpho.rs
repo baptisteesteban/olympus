@@ -1,11 +1,12 @@
 use clap::{Parser, ValueEnum};
 use olympus::Image2d;
 
-//enum SEArg {
-//    DISK(i32),
-//    CROSS(i32, i32),
-//    RECT(i32, i32),
-//}
+#[derive(ValueEnum, Clone)]
+enum SEArg {
+    DISK,
+    CROSS,
+    RECT,
+}
 
 #[derive(ValueEnum, Clone)]
 enum OPArg {
@@ -23,10 +24,15 @@ struct Args {
     output_filename: String,
     #[arg(name = "operation", help = "The operation to perform")]
     operation: OPArg,
-    #[arg(name = "width")]
+    #[arg(name = "se", help = "The structuring element to use")]
+    se: SEArg,
+    #[arg(
+        name = "width",
+        help = "The width of the structuring element (or the radius in the case of the disk)"
+    )]
     width: i32,
-    #[arg(name = "height")]
-    height: i32,
+    #[arg(name = "height", help = "The height of the structuring element")]
+    height: Option<i32>,
 }
 
 fn main() {
@@ -34,7 +40,11 @@ fn main() {
     let mut input = Image2d::<u8>::default();
     olympus::io::imread(&mut input, &args.input_filename).unwrap();
 
-    let se = olympus::rect2d(args.width, args.height).unwrap();
+    let se = match args.se {
+        SEArg::CROSS => olympus::cross2d(args.width, args.height.unwrap_or(1)).unwrap(),
+        SEArg::RECT => olympus::rect2d(args.width, args.height.unwrap_or(1)).unwrap(),
+        SEArg::DISK => olympus::disk2d(args.width).unwrap(),
+    };
 
     let output = match args.operation {
         OPArg::EROSION => olympus::morpho::erosion(&input, &se),
