@@ -43,7 +43,6 @@ where
 {
     type Domain = Box2d;
     type Value = T;
-    type Point = <Self::Domain as Domain>::Point;
 
     fn new_from_domain(domain: &Self::Domain) -> Self {
         Image2d::new(domain.width(), domain.height())
@@ -53,7 +52,7 @@ where
         Self::Domain::new(self.width, self.height)
     }
 
-    fn at_point(&self, p: &Self::Point) -> &Self::Value {
+    fn at_point(&self, p: &<Self::Domain as Domain>::Point) -> &Self::Value {
         self.at(p.x(), p.y())
     }
 }
@@ -62,7 +61,7 @@ impl<T> MutableImage for Image2d<T>
 where
     T: Default + Clone,
 {
-    fn at_point_mut(&mut self, p: &Self::Point) -> &mut Self::Value {
+    fn at_point_mut(&mut self, p: &<Self::Domain as Domain>::Point) -> &mut Self::Value {
         self.at_mut(p.x(), p.y())
     }
 }

@@ -1,11 +1,11 @@
-use crate::traits::{Domain, Image, MutableImage, SizedDomain};
+use crate::traits::{Image, MutableImage, SizedDomain};
 
 pub fn copy<I, O>(src: &I, dst: &mut O) -> Result<(), String>
 where
     I: Image,
-    I::Domain: Domain<Point = I::Point> + SizedDomain,
+    I::Domain: SizedDomain,
     I::Value: Copy + Into<O::Value>,
-    O: MutableImage<Point = I::Point, Domain = I::Domain>,
+    O: MutableImage<Domain = I::Domain>,
 {
     let dom = src.domain();
     if dom != dst.domain() {
