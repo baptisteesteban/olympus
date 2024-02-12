@@ -1,6 +1,7 @@
 use std::any::Any;
 
-use crate::{copy, Image2d};
+use crate::algorithms::copy;
+use crate::Image2d;
 use image::DynamicImage;
 
 use super::internals::{ImagersReader, LumaImagersReader};
