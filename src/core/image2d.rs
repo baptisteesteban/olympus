@@ -37,10 +37,17 @@ impl<T> Image2d<T> {
     }
 }
 
-impl<T> Image for Image2d<T> {
+impl<T> Image for Image2d<T>
+where
+    T: Default + Clone,
+{
     type Domain = Box2d;
     type Value = T;
     type Point = <Self::Domain as Domain>::Point;
+
+    fn new_from_domain(domain: &Self::Domain) -> Self {
+        Image2d::new(domain.width(), domain.height())
+    }
 
     fn domain(&self) -> Self::Domain {
         Self::Domain::new(self.width, self.height)
@@ -51,7 +58,10 @@ impl<T> Image for Image2d<T> {
     }
 }
 
-impl<T> MutableImage for Image2d<T> {
+impl<T> MutableImage for Image2d<T>
+where
+    T: Default + Clone,
+{
     fn at_point_mut(&mut self, p: &Self::Point) -> &mut Self::Value {
         self.at_mut(p.x(), p.y())
     }
@@ -65,10 +75,6 @@ impl<T: Default + Clone> Image2d<T> {
             width: width,
             height: height,
         };
-    }
-
-    pub fn new_from_domain(domain: &Box2d) -> Image2d<T> {
-        Image2d::new(domain.width(), domain.height())
     }
 
     pub fn resize(&mut self, width: i32, height: i32) {

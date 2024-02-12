@@ -5,6 +5,8 @@ pub trait Image {
     type Value;
     type Point;
 
+    fn new_from_domain(domain: &Self::Domain) -> Self;
+
     fn domain(&self) -> Self::Domain;
     fn at_point(&self, p: &Self::Point) -> &Self::Value;
 }
