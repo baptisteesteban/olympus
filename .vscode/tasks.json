@@ -1,0 +1,17 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Generate coverage",
+            "command": "cargo",
+            "type": "shell",
+            "args": [
+                "llvm-cov",
+                "--lcov",
+                "--output-path",
+                "${workspaceFolder}/lcov.info"
+            ],
+            "group": "build"
+        }
+    ]
+}
