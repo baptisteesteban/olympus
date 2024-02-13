@@ -68,27 +68,26 @@ where
 
 #[cfg(test)]
 mod tests {
-    use crate::{
-        morpho::dilation,
-        traits::{Image, MutableImage},
-        Image2d, StructuringElement2d,
-    };
+    use crate::{morpho::dilation, Image2d, StructuringElement2d};
 
     #[test]
     fn test_dilation() {
-        const VAL: [u8; 25] = [
-            0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23,
-            24,
-        ];
-
-        const REFVAL: [u8; 25] = [
-            5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 21, 22, 23,
-            24, 24,
-        ];
-        let mut img = Image2d::<u8>::new(5, 5);
-        for p in img.domain() {
-            *img.at_point_mut(&p) = VAL[(p.y() * img.width() + p.x()) as usize];
-        }
+        let img = Image2d::<u8>::new_from_vec(
+            5,
+            5,
+            Vec::<u8>::from([
+                0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22,
+                23, 24,
+            ]),
+        );
+        let ref_img = Image2d::<u8>::new_from_vec(
+            5,
+            5,
+            Vec::<u8>::from([
+                5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 21, 22,
+                23, 24, 24,
+            ]),
+        );
 
         let se = StructuringElement2d::new(
             3,
@@ -97,13 +96,7 @@ mod tests {
         )
         .unwrap();
         let out = dilation(&img, &se);
-        assert_eq!(img.width(), out.width());
-        assert_eq!(img.height(), out.height());
-        for p in out.domain() {
-            assert_eq!(
-                *out.at_point(&p),
-                REFVAL[(p.y() * out.width() + p.x()) as usize]
-            );
-        }
+
+        assert!(out == ref_img);
     }
 }

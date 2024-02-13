@@ -57,43 +57,33 @@ pub fn imread<V: Copy + Default + 'static>(
 
 #[cfg(test)]
 mod tests {
-    use crate::{io::imread, traits::Image, Image2d};
+    use crate::{io::imread, Image2d};
 
     #[test]
     fn test_read_pgm_u8() {
-        const REFVAL: [u8; 8] = [4, 3, 9, 67, 43, 125, 253, 37];
+        let ref_img =
+            Image2d::<u8>::new_from_vec(4, 2, Vec::<u8>::from([4, 3, 9, 67, 43, 125, 253, 37]));
 
         let mut img = Image2d::<u8>::default();
         if let Err(_) = imread(&mut img, "imgs/test.pgm") {
             assert!(false);
         }
 
-        assert_eq!(img.width(), 4);
-        assert_eq!(img.height(), 2);
-
-        for p in img.domain() {
-            assert_eq!(
-                *img.at_point(&p),
-                REFVAL[(p.y() * img.width() + p.x()) as usize]
-            );
-        }
+        assert!(img == ref_img);
     }
 
     #[test]
     fn test_read_tiff_u16() {
-        const REFVAL: [u16; 15] = [
-            0, 200, 400, 600, 800, 1000, 1200, 1400, 1600, 1800, 2000, 2200, 2400, 2600, 2800,
-        ];
+        let ref_img = Image2d::<u16>::new_from_vec(
+            5,
+            3,
+            Vec::<u16>::from([
+                0, 200, 400, 600, 800, 1000, 1200, 1400, 1600, 1800, 2000, 2200, 2400, 2600, 2800,
+            ]),
+        );
         let mut img: Image2d<u16> = Default::default();
         imread(&mut img, "imgs/test_u16.tiff").unwrap();
-        assert_eq!(img.width(), 5);
-        assert_eq!(img.height(), 3);
 
-        for p in img.domain() {
-            assert_eq!(
-                *img.at_point(&p),
-                REFVAL[(p.y() * img.width() + p.x()) as usize]
-            );
-        }
+        assert!(img == ref_img);
     }
 }

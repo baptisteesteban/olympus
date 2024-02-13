@@ -35,6 +35,14 @@ impl<T> Image2d<T> {
             .get_mut((y * self.width + x) as usize)
             .expect("Invalid index")
     }
+
+    pub fn new_from_vec(width: i32, height: i32, data: Vec<T>) -> Image2d<T> {
+        Image2d {
+            data: data,
+            width: width,
+            height: height,
+        }
+    }
 }
 
 impl<T> Image for Image2d<T>
@@ -84,6 +92,24 @@ impl<T: Default + Clone> Image2d<T> {
         self.width = width;
         self.height = height;
         self.data.resize((width * height) as usize, v);
+    }
+}
+
+impl<T, V> PartialEq<Image2d<T>> for Image2d<V>
+where
+    V: PartialEq<T> + Default + Clone,
+    T: Default + Clone,
+{
+    fn eq(&self, other: &Image2d<T>) -> bool {
+        if self.domain() != other.domain() {
+            return false;
+        }
+        for p in self.domain() {
+            if *self.at_point(&p) != *other.at_point(&p) {
+                return false;
+            }
+        }
+        true
     }
 }
 
@@ -142,5 +168,16 @@ mod tests {
                 REFVAL[(p.y() * img.width() + p.x()) as usize]
             );
         }
+    }
+
+    #[test]
+    fn test_eq() {
+        const REFVAL: [u8; 6] = [0, 0, 0, 0, 10, 10];
+        let img1 = Image2d::<u8>::new_from_vec(3, 2, Vec::<u8>::from(REFVAL));
+        let img2 = Image2d::<u8>::new_from_vec(3, 2, Vec::<u8>::from(REFVAL));
+        let img3 = Image2d::<u8>::new_from_vec(2, 3, Vec::<u8>::from(REFVAL));
+
+        assert!(img1 == img2);
+        assert!(img1 != img3);
     }
 }
