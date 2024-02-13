@@ -8,6 +8,8 @@
             "args": [
                 "llvm-cov",
                 "--lcov",
+                "--ignore-filename-regex",
+                "tests",
                 "--output-path",
                 "${workspaceFolder}/lcov.info"
             ],
