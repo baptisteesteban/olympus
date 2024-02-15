@@ -1,4 +1,4 @@
-pub trait Domain: PartialEq {
+pub trait Domain: PartialEq + Copy {
     type Point;
 
     fn has(&self, p: &Self::Point) -> bool;

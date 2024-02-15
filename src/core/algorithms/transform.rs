@@ -1,10 +1,10 @@
-use crate::traits::{Image, MutableImage, SizedDomain};
+use crate::traits::{Image, ImageFromDomain, MutableImage, SizedDomain};
 
 pub fn transform<I, F, O, R>(input: &I, f: F) -> O
 where
     I: Image,
     I::Domain: SizedDomain,
-    O: MutableImage<Domain = I::Domain>,
+    O: MutableImage<Domain = I::Domain, Value = R> + ImageFromDomain,
     F: Fn(&I::Value) -> R,
     R: Into<O::Value>,
 {

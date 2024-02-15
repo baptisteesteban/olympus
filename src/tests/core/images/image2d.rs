@@ -1,4 +1,7 @@
-use crate::{traits::Image, Image2d, Point2d};
+use crate::{
+    traits::{Image, ImageFromDomain},
+    Image2d, Point2d,
+};
 
 #[test]
 fn test_image_creation() {

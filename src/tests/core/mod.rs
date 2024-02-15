@@ -1,5 +1,6 @@
-mod box2d;
-mod image2d;
+mod algorithms;
+mod domains;
+mod images;
 mod point2d;
 mod rgb;
 mod se2d;

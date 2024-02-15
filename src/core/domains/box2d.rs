@@ -3,6 +3,7 @@ use crate::{
     Point2d,
 };
 
+#[derive(Clone, Copy)]
 pub struct Box2d {
     width: i32,
     height: i32,

@@ -1,7 +1,5 @@
-use crate::{
-    traits::{Domain, Image, MutableImage},
-    Box2d,
-};
+use crate::traits::{Domain, Image, ImageFromDomain, MutableImage};
+use crate::Box2d;
 
 pub struct Image2d<T> {
     data: Vec<T>,
@@ -52,16 +50,29 @@ where
     type Domain = Box2d;
     type Value = T;
 
-    fn new_from_domain(domain: &Self::Domain) -> Self {
-        Image2d::new(domain.width(), domain.height())
-    }
-
     fn domain(&self) -> Self::Domain {
         Self::Domain::new(self.width, self.height)
     }
 
     fn at_point(&self, p: &<Self::Domain as Domain>::Point) -> &Self::Value {
         self.at(p.x(), p.y())
+    }
+}
+
+impl<T> ImageFromDomain for Image2d<T>
+where
+    T: Default + Clone,
+{
+    fn new_from_domain(domain: &Self::Domain) -> Self {
+        Image2d::new(domain.width(), domain.height())
+    }
+
+    fn new_from_domain_with_value(domain: &Self::Domain, v: Self::Value) -> Self {
+        Image2d::new_from_vec(
+            domain.width(),
+            domain.height(),
+            vec![v; (domain.width() * domain.height()) as usize],
+        )
     }
 }
 
