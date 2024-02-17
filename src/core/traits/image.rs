@@ -16,3 +16,9 @@ pub trait ImageFromDomain: Image {
     fn new_from_domain(domain: &Self::Domain) -> Self;
     fn new_from_domain_with_value(domain: &Self::Domain, v: Self::Value) -> Self;
 }
+
+pub trait ChangeValueImage<T>: Image {
+    type ValueChangedImage: Image<Domain = Self::Domain, Value = T>;
+
+    fn change_value(&self) -> Self::ValueChangedImage;
+}

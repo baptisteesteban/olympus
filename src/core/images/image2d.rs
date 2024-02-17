@@ -1,4 +1,4 @@
-use crate::traits::{Domain, Image, ImageFromDomain, MutableImage};
+use crate::traits::{ChangeValueImage, Domain, Image, ImageFromDomain, MutableImage};
 use crate::Box2d;
 
 pub struct Image2d<T> {
@@ -43,10 +43,7 @@ impl<T> Image2d<T> {
     }
 }
 
-impl<T> Image for Image2d<T>
-where
-    T: Default + Clone,
-{
+impl<T> Image for Image2d<T> {
     type Domain = Box2d;
     type Value = T;
 
@@ -76,10 +73,7 @@ where
     }
 }
 
-impl<T> MutableImage for Image2d<T>
-where
-    T: Default + Clone,
-{
+impl<T> MutableImage for Image2d<T> {
     fn at_point_mut(&mut self, p: &<Self::Domain as Domain>::Point) -> &mut Self::Value {
         self.at_mut(p.x(), p.y())
     }
@@ -106,10 +100,20 @@ impl<T: Default + Clone> Image2d<T> {
     }
 }
 
+impl<T, V> ChangeValueImage<T> for Image2d<V>
+where
+    T: Default + Copy,
+{
+    type ValueChangedImage = Image2d<T>;
+
+    fn change_value(&self) -> Self::ValueChangedImage {
+        Image2d::<T>::new_from_domain(&self.domain())
+    }
+}
+
 impl<T, V> PartialEq<Image2d<T>> for Image2d<V>
 where
-    V: PartialEq<T> + Default + Clone,
-    T: Default + Clone,
+    V: PartialEq<T>,
 {
     fn eq(&self, other: &Image2d<T>) -> bool {
         if self.domain() != other.domain() {

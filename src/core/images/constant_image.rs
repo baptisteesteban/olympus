@@ -1,4 +1,4 @@
-use crate::traits::{Domain, Image, ImageFromDomain};
+use crate::traits::{ChangeValueImage, Domain, Image, ImageFromDomain};
 
 pub struct ConstantImage<V, D: Domain> {
     v: V,
@@ -34,5 +34,30 @@ where
             v: v,
             domain: domain.clone(),
         }
+    }
+}
+
+impl<T, D, V> ChangeValueImage<T> for ConstantImage<V, D>
+where
+    D: Domain + Clone,
+    V: Into<T> + Copy,
+{
+    type ValueChangedImage = ConstantImage<T, Self::Domain>;
+
+    fn change_value(&self) -> Self::ValueChangedImage {
+        ConstantImage {
+            v: self.v.into(),
+            domain: self.domain.clone(),
+        }
+    }
+}
+
+impl<T, D> PartialEq for ConstantImage<T, D>
+where
+    D: Domain,
+    T: PartialEq,
+{
+    fn eq(&self, other: &ConstantImage<T, D>) -> bool {
+        self.domain() == other.domain() && self.v == other.v
     }
 }
