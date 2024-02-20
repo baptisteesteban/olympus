@@ -1,4 +1,4 @@
-use crate::{traits::Image, Image2d, TransformView};
+use crate::{traits::Image, views::TransformView, Image2d};
 
 #[test]
 fn test_transform_view_image2d() {
