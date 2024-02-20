@@ -5,15 +5,19 @@ pub struct ConstantImage<V, D: Domain> {
     domain: D,
 }
 
-impl<V, D: Domain> Image for ConstantImage<V, D> {
+impl<V, D> Image for ConstantImage<V, D>
+where
+    D: Domain,
+{
     type Domain = D;
     type Value = V;
+    type ReturnType<'a> = &'a V where Self: 'a;
 
     fn domain(&self) -> Self::Domain {
         return self.domain.clone();
     }
 
-    fn at_point(&self, _p: &<Self::Domain as Domain>::Point) -> &Self::Value {
+    fn at_point<'a>(&'a self, _p: &<Self::Domain as Domain>::Point) -> Self::ReturnType<'a> {
         &self.v
     }
 }

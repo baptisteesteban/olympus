@@ -46,12 +46,13 @@ impl<T> Image2d<T> {
 impl<T> Image for Image2d<T> {
     type Domain = Box2d;
     type Value = T;
+    type ReturnType<'a> = &'a T where Self: 'a;
 
     fn domain(&self) -> Self::Domain {
         Self::Domain::new(self.width, self.height)
     }
 
-    fn at_point(&self, p: &<Self::Domain as Domain>::Point) -> &Self::Value {
+    fn at_point<'a>(&'a self, p: &<Self::Domain as Domain>::Point) -> Self::ReturnType<'a> {
         self.at(p.x(), p.y())
     }
 }

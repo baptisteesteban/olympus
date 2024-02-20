@@ -12,6 +12,7 @@ impl AdjacencyList {
     }
 }
 
+// TODO: Graph iterators
 impl Graph for AdjacencyList {
     fn num_vertices(&self) -> i32 {
         self.adjacency.len() as i32

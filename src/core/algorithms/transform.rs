@@ -11,7 +11,7 @@ where
     let mut out = O::new_from_domain(&input.domain());
 
     for p in input.domain() {
-        *out.at_point_mut(&p) = <R as Into<O::Value>>::into(f(input.at_point(&p)));
+        *out.at_point_mut(&p) = <R as Into<O::Value>>::into(f(&input.at_point(&p)));
     }
 
     out

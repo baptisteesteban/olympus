@@ -1,11 +1,16 @@
+use std::ops::Deref;
+
 use super::Domain;
 
 pub trait Image {
     type Domain: Domain;
     type Value;
+    type ReturnType<'a>: Deref<Target = Self::Value>
+    where
+        Self: 'a;
 
     fn domain(&self) -> Self::Domain;
-    fn at_point(&self, p: &<Self::Domain as Domain>::Point) -> &Self::Value;
+    fn at_point<'a>(&'a self, p: &<Self::Domain as Domain>::Point) -> Self::ReturnType<'a>;
 }
 
 pub trait MutableImage: Image {
