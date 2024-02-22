@@ -5,7 +5,7 @@ use super::AdjacencyList;
 pub struct UndirectedAdjacencyList(AdjacencyList);
 
 impl UndirectedAdjacencyList {
-    fn new() -> UndirectedAdjacencyList {
+    pub fn new() -> UndirectedAdjacencyList {
         UndirectedAdjacencyList(AdjacencyList::new())
     }
 }

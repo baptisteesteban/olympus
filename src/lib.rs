@@ -1,3 +1,5 @@
+#![deny(warnings)]
+
 pub mod accu;
 mod core;
 pub mod graph;
