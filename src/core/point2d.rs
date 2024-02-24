@@ -3,6 +3,8 @@ use std::{
     ops::{Add, Sub},
 };
 
+use crate::traits::{Point, UndefinedPoint};
+
 #[derive(Clone, Copy)]
 pub struct Point2d {
     x: i32,
@@ -21,6 +23,12 @@ impl Point2d {
     pub fn y(&self) -> i32 {
         self.y
     }
+}
+
+impl Point for Point2d {}
+
+impl UndefinedPoint for Point2d {
+    const UNDEF: Self = Point2d { x: -1, y: -1 };
 }
 
 impl Default for Point2d {
