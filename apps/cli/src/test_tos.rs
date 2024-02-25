@@ -12,7 +12,8 @@ fn main() {
         "/home/baptou/Pictures/laurent_condat_database/gray/IM106.tif",
     )
     .unwrap();
-    let t = maxtree(&img, C4::new());
+    let t = tos(&img);
     let area = t.accumulate_on_points(CountAccumulator::new());
-    imsave(&t.reconstruct(), "/tmp/ord2.png").unwrap();
+    let filtered_tree = t.direct_filter(|n| *area.get(n as usize).unwrap() > 300);
+    imsave(&filtered_tree.reconstruct(), "/tmp/ord2.png").unwrap();
 }

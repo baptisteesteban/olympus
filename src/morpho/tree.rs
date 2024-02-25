@@ -73,6 +73,47 @@ where
     }
 }
 
+impl<I, V> Tree<I, V>
+where
+    I: Image<Value = i32> + MutableImage + ImageFromDomain,
+    I::Domain: SizedDomain,
+    V: Copy,
+{
+    pub fn direct_filter<F>(&self, predicate: F) -> Tree<I, V>
+    where
+        F: Fn(i32) -> bool,
+    {
+        let mut new_parent = Vec::<i32>::with_capacity(self.num_nodes());
+        let mut new_value = Vec::<V>::with_capacity(self.num_nodes());
+        let mut new_nodemap = I::new_from_domain(&self.nodemap.domain());
+
+        let mut links_table: Vec<i32> = vec![Default::default(); self.num_nodes()];
+        let mut count = 1;
+        new_parent.push(0);
+        new_value.push(*self.value(0));
+
+        for n in 1..self.num_nodes() {
+            if !predicate(n as i32) {
+                *links_table.get_mut(n).unwrap() =
+                    *links_table.get(*self.parent(n as i32) as usize).unwrap();
+            } else {
+                *links_table.get_mut(n as usize).unwrap() = count;
+                count += 1;
+                new_parent.push(*links_table.get(*self.parent(n as i32) as usize).unwrap());
+                new_value.push(*self.value(n as i32));
+            }
+        }
+
+        for p in self.nodemap.domain() {
+            *new_nodemap.at_point_mut(&p) = *links_table
+                .get(*self.nodemap.at_point(&p) as usize)
+                .unwrap();
+        }
+
+        Tree::build(new_nodemap, new_parent, new_value)
+    }
+}
+
 impl<V> Tree<Image2d<i32>, V>
 where
     V: Default + Copy,
