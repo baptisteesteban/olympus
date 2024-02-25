@@ -1,7 +1,4 @@
-use std::fmt::Display;
-
 use crate::{
-    io::imprint,
     traits::{Image, Window},
     Box2d, Image2d, Point2d,
 };
@@ -90,26 +87,24 @@ mod internal {
 
 pub fn maxtree<T, C>(img: &Image2d<T>, nbh: C) -> Tree<Image2d<i32>, T>
 where
-    T: PartialOrd + Copy + Display,
+    T: PartialOrd + Copy,
     C: Window<Domain = Box2d>,
 {
     let mut points: Vec<Point2d> = img.domain().into_iter().collect();
     points.sort_by(|p, q| img.at_point(q).partial_cmp(img.at_point(p)).unwrap());
     let mut parent = internal::compute_tree(&points, img.domain(), nbh);
     internal::canonize(&points, &mut parent, img);
-    imprint(&parent);
     internal::to_tree_representation(&points, &parent, img)
 }
 
 pub fn mintree<T, C>(img: &Image2d<T>, nbh: C) -> Tree<Image2d<i32>, T>
 where
-    T: PartialOrd + Copy + Display,
+    T: PartialOrd + Copy,
     C: Window<Domain = Box2d>,
 {
     let mut points: Vec<Point2d> = img.domain().into_iter().collect();
     points.sort_by(|p, q| img.at_point(p).partial_cmp(img.at_point(q)).unwrap());
     let mut parent = internal::compute_tree(&points, img.domain(), nbh);
     internal::canonize(&points, &mut parent, img);
-    imprint(&parent);
     internal::to_tree_representation(&points, &parent, img)
 }
