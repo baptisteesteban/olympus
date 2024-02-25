@@ -14,3 +14,9 @@ bench = false
 name = "struct_morpho"
 path = "src/struct_morpho.rs"
 test = false
+
+[[bin]]
+bench = false
+name = "test_tos"
+path = "src/test_tos.rs"
+test = false

@@ -1,4 +1,6 @@
-use crate::{algorithms::transform, Image2d, Point2d};
+use crate::{Image2d, Point2d, C4};
+
+use super::{maxtree, Tree};
 
 mod internal {
     use std::fmt::Display;
@@ -8,7 +10,7 @@ mod internal {
     use crate::{
         accu::{Accumulator, InfAccumulator, SupAccumulator},
         morpho::HierarchicalQueue,
-        traits::{Domain, Image, ImageFromDomain, MutableImage, SizedDomain, Window},
+        traits::{Domain, Image, ImageFromDomain, MutableImage, Window},
         Box2d, Image2d, Point2d, C4,
     };
 
@@ -202,24 +204,24 @@ mod internal {
         immersed: &Image2d<Range<u8>>,
         start_point: Point2d,
         start_value: u8,
-    ) -> Image2d<i32> {
+    ) -> (Image2d<i32>, Vec<u8>) {
         let mut queue = HierarchicalQueue::new();
         let mut ord = Image2d::<i32>::new_from_domain_with_value(&immersed.domain(), -1);
 
         let mut lmd_old = start_value;
         queue.push(lmd_old, start_point);
         let mut d = 0;
+        let mut depth_value_mapping = Vec::<u8>::with_capacity(i32::MAX as usize);
+        depth_value_mapping.push(start_value);
 
         let nbh = C4::new();
         let domain = immersed.domain();
 
         while !queue.empty() {
             let (lmd, p) = queue.pop_nearest(lmd_old).unwrap();
-            if queue.size() > domain.size() as usize {
-                panic!("The impossible has happened");
-            }
             if lmd_old != lmd {
                 d += 1;
+                depth_value_mapping.push(lmd);
             }
             *ord.at_point_mut(&p) = d;
             for n in nbh.apply(&p) {
@@ -241,15 +243,22 @@ mod internal {
             lmd_old = lmd;
         }
 
-        ord
+        depth_value_mapping.shrink_to_fit();
+        (ord, depth_value_mapping)
     }
 }
 
-pub fn tos(img: &Image2d<u8>) -> Image2d<u16> {
+pub fn tos(img: &Image2d<u8>) -> Tree<Image2d<i32>, u8> {
     let bordered = internal::median_on_border(img);
     let interp = internal::max_interpolation(&bordered);
     let k = internal::immerse(&img);
-    let ordered = internal::compute_order_map(&k, Point2d::new(0, 0), *interp.at(0, 0));
-    let casted_ordered = transform(&ordered, |v| *v as u16);
-    casted_ordered
+    let (ordered, depth_value_mapping) =
+        internal::compute_order_map(&k, Point2d::new(0, 0), *interp.at(0, 0));
+    let t = maxtree(&ordered, C4::new());
+    let values = t
+        .values()
+        .into_iter()
+        .map(|v| *depth_value_mapping.get(*v as usize).unwrap())
+        .collect();
+    Tree::build_with_values(t, values)
 }
