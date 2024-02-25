@@ -32,4 +32,8 @@ where
     pub fn node_at_point(&self, p: <<I as Image>::Domain as Domain>::Point) -> i32 {
         *self.nodemap.at_point(&p)
     }
+
+    pub fn num_nodes(&self) -> usize {
+        self.parent.len()
+    }
 }

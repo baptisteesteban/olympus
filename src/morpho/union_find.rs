@@ -37,6 +37,10 @@ where
             ),
         }
     }
+
+    pub fn parent(&self) -> &I {
+        &self.parent
+    }
 }
 
 impl<I> UnionFind for CompressedUnionFind<I>
