@@ -24,7 +24,7 @@ impl<T: Bounded + Ord + Copy> Accumulator for SupAccumulator<T> {
         self.v = max(self.v, v);
     }
 
-    fn take_accu(&mut self, ac: Self) {
+    fn take_accu(&mut self, ac: &Self) {
         self.v = max(self.v, ac.v);
     }
 

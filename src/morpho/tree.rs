@@ -1,5 +1,6 @@
 use crate::{
-    traits::{Domain, Image, ImageFromDomain, MutableImage},
+    accu::Accumulator,
+    traits::{Domain, Image, ImageFromDomain, MutableImage, SizedDomain},
     Image2d,
 };
 
@@ -40,8 +41,8 @@ where
         self.value.get(n as usize).unwrap()
     }
 
-    pub fn node_at_point(&self, p: <<I as Image>::Domain as Domain>::Point) -> i32 {
-        *self.nodemap.at_point(&p)
+    pub fn node_at_point(&self, p: &<<I as Image>::Domain as Domain>::Point) -> i32 {
+        *self.nodemap.at_point(p)
     }
 
     pub fn num_nodes(&self) -> usize {
@@ -50,6 +51,25 @@ where
 
     pub fn values(&self) -> &Vec<V> {
         &self.value
+    }
+
+    pub fn accumulate_on_points<A, T>(&self, _acc: A) -> Vec<T>
+    where
+        I::Domain: SizedDomain,
+        A: Accumulator<Input = <I::Domain as Domain>::Point, Output = T> + Default + Clone,
+    {
+        let mut attr: Vec<A> = vec![Default::default(); self.num_nodes()];
+        for p in self.nodemap.domain() {
+            attr.get_mut(self.node_at_point(&p) as usize)
+                .unwrap()
+                .take(p);
+        }
+        for n in (self.num_nodes() - 1)..0 {
+            let acc_cur = attr.get(n).unwrap().clone();
+            let acc_parent = attr.get_mut(*self.parent.get(n).unwrap() as usize).unwrap();
+            acc_parent.take_accu(&acc_cur)
+        }
+        attr.into_iter().map(|v| v.result()).collect()
     }
 }
 

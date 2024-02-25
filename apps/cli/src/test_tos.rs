@@ -1,4 +1,5 @@
 use olympus::{
+    accu::{Accumulator, CountAccumulator},
     io::{imread, imsave},
     morpho::{maxtree, tos},
     Image2d, C4,
@@ -11,7 +12,7 @@ fn main() {
         "/home/baptou/Pictures/laurent_condat_database/gray/IM106.tif",
     )
     .unwrap();
-    //let img = Image2d::<u8>::new_from_vec(3, 3, Vec::<u8>::from([1, 1, 1, 1, 2, 1, 1, 1, 1]));
     let t = maxtree(&img, C4::new());
+    let area = t.accumulate_on_points(CountAccumulator::new());
     imsave(&t.reconstruct(), "/tmp/ord2.png").unwrap();
 }

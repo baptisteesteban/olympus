@@ -14,7 +14,7 @@ fn test_accu_sup() {
     acc2.take(46);
     acc2.take(32);
     assert_eq!(acc2.result(), 46);
-    acc2.take_accu(acc);
+    acc2.take_accu(&acc);
     assert_eq!(acc2.result(), 63);
     acc2.init();
     assert_eq!(acc2.result(), u8::MIN);

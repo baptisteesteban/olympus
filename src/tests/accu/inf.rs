@@ -14,7 +14,7 @@ fn test_accu_inf() {
     acc2.take(28);
     acc2.take(104);
     assert_eq!(acc2.result(), 28);
-    acc2.take_accu(acc);
+    acc2.take_accu(&acc);
     assert_eq!(acc2.result(), 1);
     acc2.init();
     assert_eq!(acc2.result(), u8::MAX);
