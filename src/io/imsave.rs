@@ -1,4 +1,4 @@
-use image::{ImageBuffer, Luma};
+use image::{EncodableLayout, ImageBuffer, Luma, PixelWithColorType, Primitive};
 
 use crate::Image2d;
 
@@ -18,8 +18,13 @@ mod internals {
     }
 }
 
-pub fn imsave(img: &Image2d<u8>, filename: &str) -> Result<(), String> {
-    let mut rimg = ImageBuffer::<Luma<u8>, Vec<u8>>::new(img.width() as u32, img.height() as u32);
+pub fn imsave<T>(img: &Image2d<T>, filename: &str) -> Result<(), String>
+where
+    T: Default + Primitive,
+    [T]: EncodableLayout,
+    Luma<T>: PixelWithColorType<Subpixel = T>,
+{
+    let mut rimg = ImageBuffer::<Luma<T>, Vec<T>>::new(img.width() as u32, img.height() as u32);
     internals::write_luma(&img, &mut rimg);
     if let Err(e) = rimg.save(filename) {
         return Err(format!("Unable to write the image {}: {}", filename, e));

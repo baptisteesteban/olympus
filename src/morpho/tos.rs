@@ -1,4 +1,4 @@
-use crate::Image2d;
+use crate::{algorithms::transform, Image2d, Point2d};
 
 mod internal {
     use std::fmt::Display;
@@ -7,7 +7,8 @@ mod internal {
 
     use crate::{
         accu::{Accumulator, InfAccumulator, SupAccumulator},
-        traits::{Image, ImageFromDomain, MutableImage, Window},
+        morpho::HierarchicalQueue,
+        traits::{Domain, Image, ImageFromDomain, MutableImage, SizedDomain, Window},
         Box2d, Image2d, Point2d, C4,
     };
 
@@ -196,24 +197,59 @@ mod internal {
 
         res
     }
+
+    pub(crate) fn compute_order_map(
+        immersed: &Image2d<Range<u8>>,
+        start_point: Point2d,
+        start_value: u8,
+    ) -> Image2d<i32> {
+        let mut queue = HierarchicalQueue::new();
+        let mut ord = Image2d::<i32>::new_from_domain_with_value(&immersed.domain(), -1);
+
+        let mut lmd_old = start_value;
+        queue.push(lmd_old, start_point);
+        let mut d = 0;
+
+        let nbh = C4::new();
+        let domain = immersed.domain();
+
+        while !queue.empty() {
+            let (lmd, p) = queue.pop_nearest(lmd_old).unwrap();
+            if queue.size() > domain.size() as usize {
+                panic!("The impossible has happened");
+            }
+            if lmd_old != lmd {
+                d += 1;
+            }
+            *ord.at_point_mut(&p) = d;
+            for n in nbh.apply(&p) {
+                if !domain.has(&n) {
+                    continue;
+                }
+                if *ord.at_point(&n) < 0 {
+                    let c = *immersed.at_point(&n);
+                    if lmd < c.min() {
+                        queue.push(c.min(), n);
+                    } else if lmd > c.max() {
+                        queue.push(c.max(), n)
+                    } else {
+                        queue.push(lmd, n);
+                    }
+                    *ord.at_point_mut(&n) = 0;
+                }
+            }
+            lmd_old = lmd;
+        }
+
+        ord
+    }
 }
 
-pub fn tos(img: &Image2d<u8>) {
+pub fn tos(img: &Image2d<u8>) -> Image2d<u16> {
     let bordered = internal::median_on_border(img);
     let interp = internal::max_interpolation(&bordered);
-    let _k = internal::immerse(&interp);
+    let k = internal::immerse(&img);
+    let ordered = internal::compute_order_map(&k, Point2d::new(0, 0), *interp.at(0, 0));
+    let casted_ordered = transform(&ordered, |v| *v as u16);
+    casted_ordered
 }
-
-//#[cfg(test)]
-//mod tests {
-//    use crate::Image2d;
-//
-//    use super::tos;
-//
-//    #[test]
-//    fn test() {
-//        let im = Image2d::new_from_vec(3, 2, Vec::<u8>::from([1, 4, 3, 6, 8, 3]));
-//        tos(&im);
-//        assert!(false);
-//    }
-//}

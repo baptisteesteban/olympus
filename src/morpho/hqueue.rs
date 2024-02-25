@@ -1,7 +1,9 @@
+use std::collections::VecDeque;
+
 use crate::Point2d;
 
 pub struct HierarchicalQueue {
-    queues: Vec<Vec<Point2d>>,
+    queues: Vec<VecDeque<Point2d>>,
     cur: usize,
     size: usize,
 }
@@ -28,7 +30,7 @@ impl HierarchicalQueue {
     }
 
     pub fn push(&mut self, v: u8, p: Point2d) {
-        self.queues.get_mut(v as usize).unwrap().push(p);
+        self.queues.get_mut(v as usize).unwrap().push_back(p);
         self.size += 1;
         if self.cur > (v as usize) {
             self.cur = v as usize;
@@ -41,7 +43,7 @@ impl HierarchicalQueue {
         }
 
         // Get the point
-        let p = self.queues.get_mut(self.cur).unwrap().remove(0);
+        let p = self.queues.get_mut(self.cur).unwrap().pop_front().unwrap();
         let v = self.cur as u8;
         self.size -= 1;
         self.update_current();
@@ -66,7 +68,12 @@ impl HierarchicalQueue {
             return Err("Empty queue");
         }
         let v = self.find_nearest(k);
-        let p = self.queues.get_mut(v as usize).unwrap().remove(0);
+        let p = self
+            .queues
+            .get_mut(v as usize)
+            .unwrap()
+            .pop_front()
+            .unwrap();
         self.size -= 1;
         self.update_current();
 
