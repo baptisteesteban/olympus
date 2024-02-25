@@ -1,4 +1,4 @@
-use crate::{Image2d, Point2d, C4};
+use crate::{traits::Image, Image2d, Point2d, C4};
 
 use super::{maxtree, Tree};
 
@@ -59,52 +59,6 @@ mod internal {
         }
     }
 
-    pub(crate) fn max_interpolation<T>(img: &Image2d<T>) -> Image2d<T>
-    where
-        T: Default + Copy + Ord + Bounded,
-    {
-        let domain = img.domain();
-        let new_domain = Box2d::new(domain.width() * 2 - 1, domain.height() * 2 - 1);
-        let mut res = Image2d::new_from_domain(&new_domain);
-
-        // Copy original pixels
-        for y in (0..res.height()).step_by(2) {
-            for x in (0..res.width()).step_by(2) {
-                *res.at_mut(x, y) = *img.at(x / 2, y / 2);
-            }
-        }
-
-        // Interpolate on horizontal pixels
-        for y in (0..res.height()).step_by(2) {
-            for x in (1..res.width()).step_by(2) {
-                *res.at_mut(x, y) = std::cmp::max(*res.at(x - 1, y), *res.at(x + 1, y));
-            }
-        }
-
-        // Interpolate on vertical pixels
-        for y in (1..res.height()).step_by(2) {
-            for x in (0..res.width()).step_by(2) {
-                *res.at_mut(x, y) = std::cmp::max(*res.at(x, y - 1), *res.at(x, y + 1))
-            }
-        }
-
-        // Interpolate on cross pixels
-        let nbh = C4::new();
-        let mut sup = SupAccumulator::new();
-        for y in (1..res.height()).step_by(2) {
-            for x in (1..res.width()).step_by(2) {
-                sup.init();
-                let p = Point2d::new(x, y);
-                for q in nbh.apply(&p) {
-                    sup.take(*res.at_point(&q));
-                }
-                *res.at_point_mut(&p) = sup.result();
-            }
-        }
-
-        res
-    }
-
     pub(crate) fn immerse<T>(img: &Image2d<T>) -> Image2d<Range<T>>
     where
         T: Ord + Display + Copy + Default + Bounded,
@@ -161,55 +115,16 @@ mod internal {
         res
     }
 
-    pub(crate) fn median_on_border<T>(img: &Image2d<T>) -> Image2d<T>
-    where
-        T: Copy + Default + Ord,
-    {
-        let domain = img.domain();
-        let new_domain = Box2d::new(domain.width() + 2, domain.height() + 2);
-        let mut res = Image2d::<T>::new_from_domain(&new_domain);
-
-        for x in 0..img.width() {
-            for y in 0..img.height() {
-                *res.at_mut(x + 1, y + 1) = *img.at(x, y);
-            }
-        }
-
-        let mut border_values =
-            Vec::<T>::with_capacity((2 * (img.width() + img.height()) - 4) as usize);
-        for x in 0..img.width() {
-            border_values.push(*img.at(x, 0));
-            border_values.push(*img.at(x, img.height() - 1));
-        }
-        for y in 1..(img.height() - 1) {
-            border_values.push(*img.at(0, y));
-            border_values.push(*img.at(img.width() - 1, y));
-        }
-        border_values.sort();
-
-        let median = border_values.get(border_values.len() / 2).unwrap();
-        for x in 0..res.width() {
-            *res.at_mut(x, 0) = *median;
-            *res.at_mut(x, res.height() - 1) = *median;
-        }
-        for y in 1..(res.height() - 1) {
-            *res.at_mut(0, y) = *median;
-            *res.at_mut(res.width() - 1, y) = *median;
-        }
-
-        res
-    }
-
     pub(crate) fn compute_order_map(
         immersed: &Image2d<Range<u8>>,
-        start_point: Point2d,
+        start_point: &Point2d,
         start_value: u8,
     ) -> (Image2d<i32>, Vec<u8>) {
         let mut queue = HierarchicalQueue::new();
         let mut ord = Image2d::<i32>::new_from_domain_with_value(&immersed.domain(), -1);
 
         let mut lmd_old = start_value;
-        queue.push(lmd_old, start_point);
+        queue.push(lmd_old, *start_point);
         let mut d = 0;
         let mut depth_value_mapping = Vec::<u8>::with_capacity(i32::MAX as usize);
         depth_value_mapping.push(start_value);
@@ -248,12 +163,10 @@ mod internal {
     }
 }
 
-pub fn tos(img: &Image2d<u8>) -> Tree<Image2d<i32>, u8> {
-    let bordered = internal::median_on_border(img);
-    let interp = internal::max_interpolation(&bordered);
+pub fn tos(img: &Image2d<u8>, start_point: &Point2d) -> Tree<Image2d<i32>, u8> {
+    let v0 = *img.at_point(start_point);
     let k = internal::immerse(&img);
-    let (ordered, depth_value_mapping) =
-        internal::compute_order_map(&k, Point2d::new(0, 0), *interp.at(0, 0));
+    let (ordered, depth_value_mapping) = internal::compute_order_map(&k, start_point, v0);
     let t = maxtree(&ordered, C4::new());
     let values = t
         .values()
