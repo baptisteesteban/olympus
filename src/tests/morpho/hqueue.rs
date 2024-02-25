@@ -19,7 +19,12 @@ fn test_hqueue() {
     q.push(3, Point2d::new(2, 1));
     assert_eq!(q.cur(), 2);
     assert_eq!(q.size(), 5);
-    for _ in 0..5 {
+
+    let (v2, p2) = q.pop_nearest(4).unwrap();
+    assert_eq!(v2, 3);
+    assert_eq!(p2, Point2d::new(2, 1));
+
+    for _ in 0..4 {
         let (_, _) = q.pop().unwrap();
     }
     assert!(q.empty());

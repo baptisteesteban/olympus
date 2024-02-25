@@ -39,9 +39,17 @@ impl HierarchicalQueue {
         if self.empty() {
             return Err("Empty queue");
         }
+
+        // Get the point
         let p = self.queues.get_mut(self.cur).unwrap().remove(0);
         let v = self.cur as u8;
         self.size -= 1;
+        self.update_current();
+
+        Ok((v, p))
+    }
+
+    fn update_current(&mut self) {
         if self.queues.get(self.cur).unwrap().len() == 0 {
             if self.size > 0 {
                 while self.queues.get(self.cur).unwrap().len() == 0 {
@@ -51,6 +59,40 @@ impl HierarchicalQueue {
                 self.cur = 256;
             }
         }
+    }
+
+    pub fn pop_nearest(&mut self, k: u8) -> Result<(u8, Point2d), &str> {
+        if self.empty() {
+            return Err("Empty queue");
+        }
+        let v = self.find_nearest(k);
+        let p = self.queues.get_mut(v as usize).unwrap().remove(0);
+        self.size -= 1;
+        self.update_current();
+
         Ok((v, p))
+    }
+
+    fn find_nearest(&self, k: u8) -> u8 {
+        if self.queues.get(k as usize).unwrap().len() > 0 {
+            k
+        } else {
+            let mut d: i16 = 1;
+            let mut res = 0;
+            while k as i16 + d < 256 || k as i16 - d >= 0 {
+                if k as i16 - d >= 0 && self.queues.get((k as i16 - d) as usize).unwrap().len() > 0
+                {
+                    res = k as i16 - d;
+                    break;
+                }
+                if k as i16 + d < 256 && self.queues.get((k as i16 + d) as usize).unwrap().len() > 0
+                {
+                    res = k as i16 + d;
+                    break;
+                }
+                d += 1;
+            }
+            res as u8
+        }
     }
 }
