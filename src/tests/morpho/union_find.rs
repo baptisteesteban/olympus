@@ -8,7 +8,7 @@ fn test_compressed_union_find() {
     let p1 = Point2d::new(0, 0);
     let p2 = Point2d::new(1, 0);
     let p3 = Point2d::new(1, 1);
-    let mut uf = CompressedUnionFind::<Image2d<Point2d>>::new(Box2d::new(3, 3));
+    let mut uf = CompressedUnionFind::<Image2d<Point2d>>::new(Box2d::new_from_dimension(3, 3));
     uf.make_set(&p1);
     uf.make_set(&p2);
     uf.make_set(&p3);

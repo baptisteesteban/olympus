@@ -49,7 +49,7 @@ impl<T> Image for Image2d<T> {
     type ReturnType<'a> = &'a T where Self: 'a;
 
     fn domain(&self) -> Self::Domain {
-        Self::Domain::new(self.width, self.height)
+        Self::Domain::new_from_dimension(self.width, self.height)
     }
 
     fn at_point<'a>(&'a self, p: &<Self::Domain as Domain>::Point) -> Self::ReturnType<'a> {

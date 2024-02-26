@@ -5,24 +5,31 @@ use crate::{
 
 #[derive(Clone, Copy)]
 pub struct Box2d {
-    width: i32,
-    height: i32,
+    pmin: Point2d,
+    pmax: Point2d,
 }
 
 impl Box2d {
-    pub fn new(width: i32, height: i32) -> Box2d {
+    pub fn new(pmin: Point2d, pmax: Point2d) -> Box2d {
         Box2d {
-            width: width,
-            height: height,
+            pmin: pmin,
+            pmax: pmax,
+        }
+    }
+
+    pub fn new_from_dimension(width: i32, height: i32) -> Box2d {
+        Box2d {
+            pmin: Point2d::new(0, 0),
+            pmax: Point2d::new(width - 1, height - 1),
         }
     }
 
     pub fn width(&self) -> i32 {
-        self.width
+        self.pmax.x() - self.pmin.x() + 1
     }
 
     pub fn height(&self) -> i32 {
-        self.height
+        self.pmax.y() - self.pmin.y() + 1
     }
 }
 
@@ -30,13 +37,16 @@ impl Domain for Box2d {
     type Point = Point2d;
 
     fn has(&self, p: &Self::Point) -> bool {
-        p.x() >= 0 && p.y() >= 0 && p.x() < self.width && p.y() < self.height()
+        p.x() >= self.pmin.x()
+            && p.y() >= self.pmin.y()
+            && p.x() <= self.pmax.x()
+            && p.y() <= self.pmax.y()
     }
 }
 
 impl SizedDomain for Box2d {
     fn size(&self) -> i32 {
-        self.width * self.height
+        self.width() * self.height()
     }
 }
 
@@ -45,9 +55,9 @@ impl ShapedDomain for Box2d {
 
     fn shape(&self, i: usize) -> Result<i32, String> {
         if i == 0 {
-            Ok(self.width)
+            Ok(self.width())
         } else if i == 1 {
-            Ok(self.height)
+            Ok(self.height())
         } else {
             Err(format!(
                 "Index i ({}) out of range (should be in [0 - {}[)",
@@ -69,7 +79,7 @@ impl IntoIterator for Box2d {
 
 impl PartialEq for Box2d {
     fn eq(&self, other: &Self) -> bool {
-        self.width == other.width && self.height == other.height
+        self.pmin == other.pmin && self.pmax == other.pmax
     }
 }
 
