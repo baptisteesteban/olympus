@@ -10,7 +10,7 @@ where
     T: Default + Copy + Ord + Bounded,
 {
     let domain = img.domain();
-    let new_domain = Box2d::new(domain.width() * 2 - 1, domain.height() * 2 - 1);
+    let new_domain = Box2d::new_from_dimension(domain.width() * 2 - 1, domain.height() * 2 - 1);
     let mut res = Image2d::new_from_domain(&new_domain);
 
     // Copy original pixels

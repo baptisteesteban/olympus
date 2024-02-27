@@ -26,7 +26,7 @@ where
     T: Copy + Default + Ord,
 {
     let domain = img.domain();
-    let new_domain = Box2d::new(domain.width() + 2, domain.height() + 2);
+    let new_domain = Box2d::new_from_dimension(domain.width() + 2, domain.height() + 2);
     let mut res = Image2d::<T>::new_from_domain(&new_domain);
 
     for x in 0..img.width() {
