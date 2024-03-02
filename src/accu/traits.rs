@@ -1,4 +1,4 @@
-pub trait Accumulator {
+pub trait Accumulator: Default {
     type Input;
     type Output;
 

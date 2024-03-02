@@ -53,6 +53,27 @@ where
         &self.value
     }
 
+    pub fn nodemap(&self) -> &I {
+        &self.nodemap
+    }
+
+    pub fn parents(&self) -> &Vec<i32> {
+        &self.parent
+    }
+
+    pub fn depth(&self) -> Vec<i32> {
+        let mut res: Vec<i32> = vec![0; self.num_nodes() as usize];
+
+        for n in 1..self.num_nodes() {
+            *res.get_mut(n).unwrap() = *res
+                .get(*self.parent.get(n as usize).unwrap() as usize)
+                .unwrap()
+                + 1
+        }
+
+        res
+    }
+
     pub fn accumulate_on_points<A, T>(&self, _acc: A) -> Vec<T>
     where
         I::Domain: SizedDomain,
@@ -118,13 +139,20 @@ impl<V> Tree<Image2d<i32>, V>
 where
     V: Default + Copy,
 {
-    pub fn reconstruct(&self) -> Image2d<V> {
+    pub fn reconstruct_from_values<T>(&self, v: &Vec<T>) -> Image2d<T>
+    where
+        T: Default + Copy,
+    {
         let mut res = Image2d::new_from_domain(&self.nodemap.domain());
 
         for p in res.domain() {
-            *res.at_point_mut(&p) = *self.value.get(*self.nodemap.at_point(&p) as usize).unwrap();
+            *res.at_point_mut(&p) = *v.get(*self.nodemap.at_point(&p) as usize).unwrap();
         }
 
         res
+    }
+
+    pub fn reconstruct(&self) -> Image2d<V> {
+        self.reconstruct_from_values(&self.value)
     }
 }

@@ -32,3 +32,9 @@ impl<T: Bounded + Ord + Copy> Accumulator for SupAccumulator<T> {
         self.v
     }
 }
+
+impl<T: Bounded + Ord + Copy> Default for SupAccumulator<T> {
+    fn default() -> Self {
+        Self::new()
+    }
+}

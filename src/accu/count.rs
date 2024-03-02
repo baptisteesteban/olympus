@@ -44,6 +44,6 @@ impl UntakeAccumulator for CountAccumulator {
 
 impl Default for CountAccumulator {
     fn default() -> Self {
-        CountAccumulator::new()
+        Self::new()
     }
 }
