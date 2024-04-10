@@ -8,9 +8,18 @@ version = "0.1.0"
 [dependencies]
 num = "0.4.1"
 olympus = {path = "../.."}
+pixels = "0.13.0"
+pixels_primitives = "0.1.1"
+winit = {version = "0.29.15", features = ["rwh_05"]}
 
 [[bin]]
 bench = false
 name = "grain_filter"
 path = "src/bin/grain_filter.rs"
+test = false
+
+[[bin]]
+bench = false
+name = "kdisplay"
+path = "src/bin/kdisplay.rs"
 test = false

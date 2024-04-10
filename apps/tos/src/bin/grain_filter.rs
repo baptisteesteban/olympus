@@ -4,7 +4,7 @@ use olympus::{
     morpho::tos,
     Image2d, Point2d,
 };
-use olympys_tos::{add_median_border, max_interpolation};
+use olympus_tos::{add_median_border, max_interpolation};
 
 fn main() {
     let mut img = Image2d::<u8>::default();
