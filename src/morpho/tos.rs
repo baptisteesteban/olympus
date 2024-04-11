@@ -9,7 +9,7 @@ mod internal {
 
     use crate::{
         accu::{Accumulator, InfAccumulator, SupAccumulator},
-        morpho::HierarchicalQueue,
+        structures::HierarchicalQueue,
         traits::{Domain, Image, ImageFromDomain, MutableImage, Window},
         Box2d, Image2d, Point2d, C4,
     };

@@ -1,4 +1,4 @@
-use crate::{morpho::HierarchicalQueue, Point2d};
+use crate::{structures::HierarchicalQueue, Point2d};
 
 #[test]
 fn test_hqueue() {
