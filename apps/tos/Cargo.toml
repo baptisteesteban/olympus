@@ -8,9 +8,7 @@ version = "0.1.0"
 [dependencies]
 num = "0.4.1"
 olympus = {path = "../.."}
-pixels = "0.13.0"
-pixels_primitives = "0.1.1"
-winit = {version = "0.29.15", features = ["rwh_05"]}
+svg = "0.16.0"
 
 [[bin]]
 bench = false
@@ -20,6 +18,6 @@ test = false
 
 [[bin]]
 bench = false
-name = "kdisplay"
-path = "src/bin/kdisplay.rs"
+name = "test_ksave"
+path = "src/bin/test_ksave.rs"
 test = false

@@ -5,7 +5,7 @@ mod lca;
 //mod contours;
 mod cubical_complex_helper;
 mod interpolation;
-mod kdisplay;
+mod ksave;
 
 pub use border::*;
 pub use kprint::kprint;
@@ -13,5 +13,5 @@ pub use kprint::kprint;
 //pub use contours::*;
 pub use cubical_complex_helper::*;
 pub use interpolation::*;
-pub use kdisplay::*;
+pub use ksave::*;
 pub use lca::*;
