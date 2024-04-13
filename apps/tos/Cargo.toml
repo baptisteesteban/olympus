@@ -15,9 +15,3 @@ bench = false
 name = "grain_filter"
 path = "src/bin/grain_filter.rs"
 test = false
-
-[[bin]]
-bench = false
-name = "test_ksave"
-path = "src/bin/test_ksave.rs"
-test = false

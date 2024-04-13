@@ -1,3 +1,4 @@
+use olympus::RGB;
 use svg::node::element::path::Data;
 use svg::node::element::Circle;
 use svg::node::element::Path;
@@ -8,7 +9,23 @@ use olympus::Image2d;
 
 use crate::{is_0_face, is_1v_face, is_2_face};
 
-pub fn ksave<V>(k: &Image2d<V>, filename: &str) {
+pub trait ValueToHexKSave {
+    fn convert(&self) -> String;
+}
+
+impl ValueToHexKSave for u8 {
+    fn convert(&self) -> String {
+        format!("#{:02x}{:02x}{:02x}", self, self, self)
+    }
+}
+
+impl ValueToHexKSave for RGB {
+    fn convert(&self) -> String {
+        format!("#{:02x}{:02x}{:02x}", self.r(), self.g(), self.b())
+    }
+}
+
+pub fn ksave<V: ValueToHexKSave>(k: &Image2d<V>, filename: &str) {
     let mut document = Document::new().set("viewBox", (0, 0, 2 * k.width(), 2 * k.height()));
 
     for p in k.domain() {
@@ -39,7 +56,7 @@ pub fn ksave<V>(k: &Image2d<V>, filename: &str) {
             };
 
             let element = Path::new()
-                .set("fill", "none")
+                .set("fill", k.at_point(&p).convert())
                 .set("stroke", "black")
                 .set("stroke-width", 0.2)
                 .set("d", data);
@@ -50,7 +67,7 @@ pub fn ksave<V>(k: &Image2d<V>, filename: &str) {
                 .set("cx", 2 * p.x() + 1)
                 .set("cy", 2 * p.y() + 1)
                 .set("r", 0.5)
-                .set("fill", "none")
+                .set("fill", k.at_point(&p).convert())
                 .set("stroke", "black")
                 .set("stroke-width", 0.2);
             document = document.add(element);
