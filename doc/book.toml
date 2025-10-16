@@ -1,0 +1,11 @@
+[book]
+authors = ["Baptiste Esteban <baptiste.esteban@epita.fr>"]
+language = "en"
+src = "src"
+title = "The Olympus Generic Image Processing Library"
+
+[rust]
+edition = "2021"
+
+[build]
+build-dir = "olympus-book"
