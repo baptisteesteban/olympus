@@ -32,6 +32,8 @@ jobs:
           mkdir public
           mdbook build doc
           mv doc/olympus-book/* public
+          cargo doc -p olympus --no-deps
+          mv target/doc/olympus public/api
 
       - name: Documentation artefact
         id: deployment
