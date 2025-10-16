@@ -1,0 +1,10 @@
+[workspace]
+members = ["olympus", "olympus-bin", "sandbox/tos-dt"]
+resolver = "2"
+
+[workspace.package]
+authors = [
+  "Baptiste Esteban <baptiste.esteban@epita.fr>",
+]
+edition = "2021"
+version = "0.1.0"

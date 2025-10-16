@@ -1,0 +1,29 @@
+[package]
+authors = { workspace = true }
+edition = { workspace = true }
+name = "olympus-bin"
+version = { workspace = true }
+
+[dependencies]
+clap = { version = "4.5.42", features = ["derive"] }
+olympus = { path = "../olympus" }
+
+[[bin]]
+name = "structural_operations"
+path = "src/structural_operations.rs"
+
+[[bin]]
+name = "convolution"
+path = "src/convolution.rs"
+
+[[bin]]
+name = "kruskal"
+path = "src/kruskal.rs"
+
+[[bin]]
+name = "grayscale2inferno"
+path = "src/grayscale2inferno.rs"
+
+[[bin]]
+name = "nwg"
+path = "src/nwg.rs"

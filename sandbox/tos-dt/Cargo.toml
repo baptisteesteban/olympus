@@ -1,0 +1,21 @@
+[package]
+name = "tos-dt"
+authors.workspace = true
+edition.workspace = true
+version.workspace = true
+
+[dependencies]
+clap = { version = "4.5.48", features = ["derive"] }
+olympus = { path = "../../olympus" }
+
+[dev-dependencies]
+criterion = { version = "0.7.0", features = ["html_reports"] }
+
+[[bin]]
+name = "experiment"
+path = "src/experiment.rs"
+
+[[bench]]
+name = "benchmark_tos"
+path = "src/benchmark_tos.rs"
+harness = false
