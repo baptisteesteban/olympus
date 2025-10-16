@@ -1,7 +1,7 @@
 # Olympus, a Generic Image Processing Library
 
 [![License: MPL 2.0](https://img.shields.io/badge/License-MPL_2.0-brightgreen.svg)](https://opensource.org/licenses/MPL-2.0)
-[![Build and Tests](https://github.com/baptisteesteban/olympus-v2/actions/workflows/build_and_test.yml/badge.svg?branch=master)](https://github.com/baptisteesteban/olympus-v2/actions/workflows/build_and_test.yml)
+[![Build and Test](https://github.com/baptisteesteban/olympus/actions/workflows/build_and_test.yml/badge.svg)](https://github.com/baptisteesteban/olympus/actions/workflows/build_and_test.yml)
 
 Olympus aims to be a generic image processing library implemented in Rust. It is
 strongly inspired by the [Olena](https://gitlab.lre.epita.fr/olena/olena)
