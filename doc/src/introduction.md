@@ -1,3 +1,3 @@
 # Introduction
 
-You can find an API reference [here](./api/index.html)
+You can find an API reference [here](./api/olympus/index.html)
