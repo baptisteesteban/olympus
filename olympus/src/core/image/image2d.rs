@@ -129,7 +129,6 @@ impl<T> Image2d<T> {
 }
 
 impl<T: Clone> Image2d<T> {
-    ///
     pub fn resize_with_value(&mut self, width: i32, height: i32, v: T) {
         self.domain = Box2d::new(max(width, 0), max(height, 0));
         self.data.resize((width * height) as usize, v);
