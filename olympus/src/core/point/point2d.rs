@@ -3,19 +3,25 @@ use std::{
     ops::{Add, Div, Mul, Sub},
 };
 
+/// Implementation of a 2D point for a 2D regular grid. The coordinate system
+/// used in Olympus is the `(x, y)` coordinate system.
 #[derive(Debug, Clone, Copy)]
 pub struct Point2d {
+    /// The `x` coordinate
     pub x: i32,
+    /// The `y` coordinate
     pub y: i32,
 }
 
 impl Point2d {
+    /// Build a new 2D point.
     pub const fn new(x: i32, y: i32) -> Point2d {
         Point2d { x, y }
     }
 }
 
 impl Default for Point2d {
+    /// Default constructor of a `Point2d`. Returns `(0, 0)`.
     fn default() -> Self {
         Self::new(0, 0)
     }
