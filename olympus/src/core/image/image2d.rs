@@ -145,7 +145,7 @@ impl<T: Default + Clone> Image2d<T> {
     ///
     /// # Errors
     ///
-    /// This runction returns an error if the dimensions are incorrect.
+    /// This function returns an error if the dimensions are incorrect.
     pub fn new(width: i32, height: i32) -> Result<Image2d<T>, String> {
         if width < 0 || height < 0 {
             return Err(String::from("Width and height must be superior to 0"));
@@ -164,6 +164,8 @@ impl<T: Default + Clone> Image2d<T> {
 impl<V> Index<(i32, i32)> for Image2d<V> {
     type Output = V;
 
+    /// Value access with an index of the form `(x, y)`. The index validity is
+    /// only checked in debug build for performance purposes.
     #[inline]
     fn index(&self, index: (i32, i32)) -> &Self::Output {
         debug_assert!(
@@ -174,6 +176,8 @@ impl<V> Index<(i32, i32)> for Image2d<V> {
 }
 
 impl<V> IndexMut<(i32, i32)> for Image2d<V> {
+    /// Mutable value access with an index of the form `(x, y)`. The index
+    /// validity is only checked in debug build for performance purposes.
     #[inline]
     fn index_mut(&mut self, index: (i32, i32)) -> &mut Self::Output {
         debug_assert!(
@@ -186,6 +190,8 @@ impl<V> IndexMut<(i32, i32)> for Image2d<V> {
 impl<V> Index<Point2d> for Image2d<V> {
     type Output = V;
 
+    /// Value access for with an index being a `Point2d`. The index validity is
+    /// only checked in debug build for performance purposes.
     #[inline]
     fn index(&self, index: Point2d) -> &Self::Output {
         debug_assert!(self.domain().has(&index));
@@ -194,6 +200,8 @@ impl<V> Index<Point2d> for Image2d<V> {
 }
 
 impl<V> IndexMut<Point2d> for Image2d<V> {
+    /// Mutable value access for with an index being a `Point2d`. The index
+    /// validity is only checked in debug build for performance purposes.
     #[inline]
     fn index_mut(&mut self, index: Point2d) -> &mut Self::Output {
         debug_assert!(self.domain().has(&index));
@@ -202,6 +210,7 @@ impl<V> IndexMut<Point2d> for Image2d<V> {
 }
 
 impl<T: Default> Default for Image2d<T> {
+    /// Default constructor for an image. Return an image with an empty domain.
     fn default() -> Self {
         Self {
             domain: Box2d::default(),
@@ -211,6 +220,8 @@ impl<T: Default> Default for Image2d<T> {
 }
 
 impl<T: PartialEq> PartialEq for Image2d<T> {
+    /// Equality comparison between two images. The domain and the value for
+    /// each pixel are compared.
     fn eq(&self, other: &Self) -> bool {
         if self.width() != other.width() || self.height() != other.height() {
             return false;
@@ -233,6 +244,7 @@ where
 {
     type Output = Image2d<<T as Add>::Output>;
 
+    /// Addition between two images using the `+` operator.
     fn add(self, rhs: Self) -> Self::Output {
         let mut res = Image2d::<<T as Add>::Output>::new(self.width(), self.height()).unwrap();
         for p in self.domain {
@@ -249,6 +261,7 @@ where
 {
     type Output = Image2d<<T as Sub>::Output>;
 
+    /// Substraction between two images using the `-` operator.
     fn sub(self, rhs: Self) -> Self::Output {
         let mut res = Image2d::<<T as Sub>::Output>::new(self.width(), self.height()).unwrap();
         for p in self.domain {
