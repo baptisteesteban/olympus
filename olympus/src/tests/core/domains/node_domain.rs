@@ -21,7 +21,8 @@ fn test_node_domain() {
     assert!(domain.has(&n3));
     assert!(!domain.has(&4));
 
-    for (i, n) in domain.into_iter().enumerate() {
+    for (i, n) in domain.clone().into_iter().enumerate() {
         assert_eq!(i as i32, n);
     }
+    assert!(domain.has(&n1));
 }

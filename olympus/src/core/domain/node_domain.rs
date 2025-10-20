@@ -1,5 +1,6 @@
 use crate::{graph::AdjacencyList, Domain, Graph, SizedDomain};
 
+#[derive(Clone)]
 pub struct NodeDomain {
     g: AdjacencyList,
 }

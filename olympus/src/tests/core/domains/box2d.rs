@@ -37,12 +37,10 @@ fn test_box2d_iterator() {
         Point2d::new(1, 1),
         Point2d::new(2, 1),
     ];
-    let mut i = 0;
-    for p in d {
+
+    for (i, p) in d.into_iter().enumerate() {
         assert_eq!(p, ref_points[i]);
-        i += 1;
     }
-    assert_eq!(i, 6);
 }
 
 #[test]
