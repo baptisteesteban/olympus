@@ -22,14 +22,17 @@ where
     V: Copy,
     C: Window,
 {
-    let mut deja_vu = Image2d::<bool>::new(img.width(), img.height()).unwrap();
-    let mut nodemap = Image2d::<usize>::new(img.width(), img.height()).unwrap();
+    let mut deja_vu = Image2d::<bool>::new_with_value(img.width(), img.height(), false).unwrap();
+    let mut nodemap =
+        unsafe { Image2d::<usize>::new_uninitialized(img.width(), img.height()).unwrap() };
     let mut parent = Vec::<usize>::with_capacity((img.width() * img.height()) as usize);
     let mut value = Vec::<V>::with_capacity((img.width() * img.height()) as usize);
 
     let domain = img.domain();
 
-    let mut uf = UnionFind::new(Image2d::<Point2d>::new(img.width(), img.height()).unwrap());
+    let mut uf = UnionFind::new(unsafe {
+        Image2d::<Point2d>::new_uninitialized(img.width(), img.height()).unwrap()
+    });
     for (lbl, p) in sorted.iter().enumerate() {
         uf.make_set(p);
         *deja_vu.at_mut(p).unwrap() = true;

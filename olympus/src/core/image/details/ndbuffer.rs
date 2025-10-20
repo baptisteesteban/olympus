@@ -4,14 +4,15 @@ use std::{
     ptr::NonNull,
 };
 
-pub struct Image2dBuffer<V> {
+#[derive(Debug)]
+pub struct NDBuffer<V> {
     buffer: NonNull<V>,
     size: usize,
 }
 
-impl<V> Image2dBuffer<V> {
-    pub fn new() -> Image2dBuffer<V> {
-        Image2dBuffer {
+impl<V> NDBuffer<V> {
+    pub fn new() -> NDBuffer<V> {
+        NDBuffer {
             buffer: NonNull::dangling(),
             size: 0,
         }
@@ -47,20 +48,28 @@ impl<V> Image2dBuffer<V> {
         self.size = size;
     }
 
-    pub fn new_with_capacity(size: usize) -> Image2dBuffer<V> {
-        let mut res = Image2dBuffer::<V>::new();
+    pub fn new_with_capacity(size: usize) -> NDBuffer<V> {
+        let mut res = NDBuffer::<V>::new();
         res.resize(size);
         res
     }
+
+    pub fn as_ptr(&self) -> *mut V {
+        self.buffer.as_ptr()
+    }
+
+    pub fn size(&self) -> usize {
+        self.size
+    }
 }
 
-impl<V> Drop for Image2dBuffer<V> {
+impl<V> Drop for NDBuffer<V> {
     fn drop(&mut self) {
         self.deallocate();
     }
 }
 
-impl<V> Deref for Image2dBuffer<V> {
+impl<V> Deref for NDBuffer<V> {
     type Target = [V];
 
     fn deref(&self) -> &Self::Target {
@@ -68,8 +77,14 @@ impl<V> Deref for Image2dBuffer<V> {
     }
 }
 
-impl<V> DerefMut for Image2dBuffer<V> {
+impl<V> DerefMut for NDBuffer<V> {
     fn deref_mut(&mut self) -> &mut Self::Target {
         unsafe { std::slice::from_raw_parts_mut(self.buffer.as_ptr(), self.size) }
+    }
+}
+
+impl<V> Default for NDBuffer<V> {
+    fn default() -> Self {
+        Self::new()
     }
 }

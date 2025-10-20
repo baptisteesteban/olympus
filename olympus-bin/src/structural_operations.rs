@@ -1,7 +1,7 @@
 use clap::{Parser, ValueEnum};
 use olympus::{
     io::{imread, imsave},
-    morpho::{closing, dilation, erosion, external_gradient, gradient, internal_gradient, opening},
+    morpho::{closing, dilation, erosion, gradient, opening},
     Image2d, Mask2d,
 };
 
@@ -12,8 +12,6 @@ enum MorphologicalOperation {
     Opening,
     Closing,
     Gradient,
-    InternalGradient,
-    ExternalGradient,
 }
 
 #[derive(Clone, ValueEnum)]
@@ -47,8 +45,6 @@ fn main() {
         MorphologicalOperation::Opening => opening(&img, &mask),
         MorphologicalOperation::Closing => closing(&img, &mask),
         MorphologicalOperation::Gradient => gradient(&img, &mask),
-        MorphologicalOperation::InternalGradient => internal_gradient(&img, &mask),
-        MorphologicalOperation::ExternalGradient => external_gradient(&img, &mask),
     };
     imsave(&args.output_filename, &out).unwrap();
 }

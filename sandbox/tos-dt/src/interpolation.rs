@@ -70,7 +70,8 @@ where
     F: InterpolationOperator<V>,
     V: Default + Clone + Copy,
 {
-    let mut res = Image2d::new(2 * img.width() - 1, 2 * img.height() - 1).unwrap();
+    let mut res =
+        unsafe { Image2d::new_uninitialized(2 * img.width() - 1, 2 * img.height() - 1).unwrap() };
 
     for p in *res.domain() {
         if p.x % 2 == 0 && p.y % 2 == 0 {

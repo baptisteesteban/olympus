@@ -1,24 +1,27 @@
 #![allow(clippy::missing_safety_doc)]
 
 use std::{
-    cmp::max,
+    fmt::Debug,
     ops::{Add, Index, IndexMut, Sub},
 };
 
-use crate::{Box2d, Point2d};
+use crate::{core::image::details::NDBuffer, fill, Box2d, Point2d};
 
 /// Implementation of an image defined on a 2D regular grid whose values,
 /// encoded by the type `T`, are stored in a contiguous buffer.
-#[derive(Debug, Clone)]
+#[derive(Debug)]
 pub struct Image2d<T> {
     /// The definition domain of the image. In this case, it is a 2D regular
     /// grid.
     domain: Box2d,
     /// The buffer storing the values of the image pixels.
-    data: Vec<T>,
+    data: NDBuffer<T>,
 }
 
-impl<T> Image2d<T> {
+impl<T> Image2d<T>
+where
+    T: Copy,
+{
     /// Build a new image whose dimension are set to `width` and `height` and
     /// whose values given by the vector `vec`.
     ///
@@ -32,12 +35,29 @@ impl<T> Image2d<T> {
                 "Image and input vector should have the same number of elements",
             ));
         }
+        let mut buffer = NDBuffer::new_with_capacity(vec.len());
+        for i in 0..vec.len() {
+            buffer[i] = vec[i];
+        }
         Ok(Image2d {
             domain: Box2d::new(width, height),
-            data: vec,
+            data: buffer,
         })
     }
 
+    pub fn new_with_value(width: i32, height: i32, v: T) -> Result<Image2d<T>, String> {
+        let res = unsafe { Self::new_uninitialized(width, height) };
+        match res {
+            Ok(mut img) => {
+                fill(&mut img, v);
+                Ok(img)
+            }
+            Err(e) => Err(e),
+        }
+    }
+}
+
+impl<T> Image2d<T> {
     /// Returns the width of the image.
     #[inline]
     pub fn width(&self) -> i32 {
@@ -129,35 +149,35 @@ impl<T> Image2d<T> {
 }
 
 impl<T: Clone> Image2d<T> {
-    pub fn resize_with_value(&mut self, width: i32, height: i32, v: T) {
-        self.domain = Box2d::new(max(width, 0), max(height, 0));
-        self.data.resize((width * height) as usize, v);
-    }
-
     /// This function returns an iterator over the image pixel values.
     pub fn values(&self) -> impl Iterator<Item = T> {
-        self.data.clone().into_iter()
+        let mut vec = Vec::<T>::new();
+        for p in self.domain {
+            vec.push(self[p].clone());
+        }
+        vec.into_iter()
     }
 }
 
-impl<T: Default + Clone> Image2d<T> {
+impl<T> Image2d<T> {
     /// Build a new image defined over a 2D regular grid of size `(width, height)`.
     ///
     /// # Errors
     ///
     /// This function returns an error if the dimensions are incorrect.
-    pub fn new(width: i32, height: i32) -> Result<Image2d<T>, String> {
+    pub unsafe fn new_uninitialized(width: i32, height: i32) -> Result<Image2d<T>, String> {
         if width < 0 || height < 0 {
             return Err(String::from("Width and height must be superior to 0"));
         }
         Ok(Image2d {
             domain: Box2d::new(width, height),
-            data: vec![T::default(); (width * height) as usize],
+            data: NDBuffer::new_with_capacity((width * height) as usize),
         })
     }
 
     pub fn resize(&mut self, width: i32, height: i32) {
-        self.resize_with_value(width, height, T::default());
+        self.data.resize((width * height) as usize);
+        self.domain = Box2d::new(width, height);
     }
 }
 
@@ -246,7 +266,9 @@ where
 
     /// Addition between two images using the `+` operator.
     fn add(self, rhs: Self) -> Self::Output {
-        let mut res = Image2d::<<T as Add>::Output>::new(self.width(), self.height()).unwrap();
+        let mut res = unsafe {
+            Image2d::<<T as Add>::Output>::new_uninitialized(self.width(), self.height()).unwrap()
+        };
         for p in self.domain {
             res[p] = self[p] + rhs[p];
         }
@@ -263,7 +285,9 @@ where
 
     /// Substraction between two images using the `-` operator.
     fn sub(self, rhs: Self) -> Self::Output {
-        let mut res = Image2d::<<T as Sub>::Output>::new(self.width(), self.height()).unwrap();
+        let mut res = unsafe {
+            Image2d::<<T as Sub>::Output>::new_uninitialized(self.width(), self.height()).unwrap()
+        };
         for p in self.domain {
             res[p] = self[p] - rhs[p];
         }

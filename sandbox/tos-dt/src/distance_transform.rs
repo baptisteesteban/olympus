@@ -20,8 +20,8 @@ fn proj(v: u8, a: u8, b: u8) -> u8 {
 /// extended to other data types.
 pub fn distance_transform(img: &Image2d<Range<u8>>) -> (Image2d<u32>, Image2d<u8>) {
     let mut q = DistanceHQueue::default();
-    let mut dt = Image2d::<u32>::new(img.width(), img.height()).unwrap();
-    let mut f = Image2d::<u8>::new(img.width(), img.height()).unwrap();
+    let mut dt = unsafe { Image2d::<u32>::new_uninitialized(img.width(), img.height()).unwrap() };
+    let mut f = unsafe { Image2d::<u8>::new_uninitialized(img.width(), img.height()).unwrap() };
     let unvisited = u32::sup();
     fill(&mut dt, unvisited);
 

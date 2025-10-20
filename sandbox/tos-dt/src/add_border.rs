@@ -7,13 +7,12 @@ pub fn add_border<V>(img: &Image2d<V>, v: V) -> Image2d<V>
 where
     V: Copy + Default,
 {
-    let mut res = Image2d::<V>::new(img.width() + 2, img.height() + 2).unwrap();
+    let mut res =
+        unsafe { Image2d::<V>::new_uninitialized(img.width() + 2, img.height() + 2).unwrap() };
     const DP: Point2d = Point2d::new(1, 1);
 
     for p in *img.domain() {
-        unsafe {
-            *res.at_unchecked_mut(&(p + DP)) = *img.at_unchecked(&p);
-        }
+        res[p + DP] = img[p];
     }
 
     let (width, height) = (res.width(), res.height());

@@ -77,7 +77,9 @@ where
 
     let mut parent_vec: Vec<usize> = vec![0; count as usize];
     let mut value_vec = vec![Default::default(); count as usize];
-    let mut nodemap = Image2d::<usize>::new(t.nodemap.width(), t.nodemap.height()).unwrap();
+    let mut nodemap = unsafe {
+        Image2d::<usize>::new_uninitialized(t.nodemap.width(), t.nodemap.height()).unwrap()
+    };
     count -= 1;
 
     let mut mapping: Vec<usize> = vec![0; t.parents.len()];
@@ -109,7 +111,8 @@ pub fn reconstruct_from_values<V, A>(t: &ComponentTree<V>, values: &[A]) -> Imag
 where
     A: Default + Copy,
 {
-    let mut res = Image2d::<A>::new(t.nodemap.width(), t.nodemap.height()).unwrap();
+    let mut res =
+        unsafe { Image2d::<A>::new_uninitialized(t.nodemap.width(), t.nodemap.height()).unwrap() };
 
     for p in *res.domain() {
         res[p] = values[t.nodemap[p]];

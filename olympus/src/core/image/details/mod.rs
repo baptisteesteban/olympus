@@ -1,1 +1,3 @@
-mod image2d_buffer;
+mod ndbuffer;
+
+pub use ndbuffer::NDBuffer;

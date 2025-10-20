@@ -6,7 +6,7 @@ use crate::{Image2d, Mask2d, Window};
 ///
 /// This function panics if the image fails to build
 pub fn convolution(img: &Image2d<u8>) -> Image2d<u8> {
-    let mut res = Image2d::<u8>::new(img.width(), img.height()).unwrap();
+    let mut res = unsafe { Image2d::<u8>::new_uninitialized(img.width(), img.height()).unwrap() };
 
     let domain = img.domain();
 

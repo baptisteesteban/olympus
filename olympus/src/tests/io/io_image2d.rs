@@ -5,16 +5,14 @@ use crate::{Image2d, Rgb8};
 fn test_read_write_image2d_u8() {
     const PATH: &str = "test_img_io.png";
 
-    let mut img = Image2d::new(3, 5).unwrap();
+    let mut img = unsafe { Image2d::new_uninitialized(3, 5).unwrap() };
     assert_eq!(img.width(), 3);
     assert_eq!(img.height(), 5);
 
     // Generate iota
     for y in 0..img.height() {
         for x in 0..img.width() {
-            if let Some(v) = img.get_mut(x, y) {
-                *v = (y * 3 + x) as u8;
-            }
+            img[(x, y)] = (y * 3 + x) as u8;
         }
     }
 
@@ -37,7 +35,7 @@ fn test_read_write_image2d_u8() {
 fn test_read_write_image2d_rgb8() {
     const PATH: &str = "test_img_rgb_io.png";
 
-    let mut img = Image2d::<Rgb8>::new(3, 5).unwrap();
+    let mut img = unsafe { Image2d::<Rgb8>::new_uninitialized(3, 5).unwrap() };
     assert_eq!(img.width(), 3);
     assert_eq!(img.height(), 5);
 

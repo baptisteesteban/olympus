@@ -71,6 +71,7 @@ where
     dil - ero
 }
 
+/*
 /// Perform a morphological internal gradient on the image `img` using the
 /// structuring element `se`.
 pub fn internal_gradient<T>(img: &Image2d<T>, se: &Mask2d) -> Image2d<<T as Sub>::Output>
@@ -91,4 +92,4 @@ where
 {
     let dil = dilation(img, se);
     dil - img.clone()
-}
+}*/

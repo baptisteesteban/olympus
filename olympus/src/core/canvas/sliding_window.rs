@@ -18,7 +18,7 @@ where
     T: Default + Copy + Ord,
     Op: WindowOperation<T>,
 {
-    let mut res = Image2d::new(img.width(), img.height()).unwrap();
+    let mut res = unsafe { Image2d::new_uninitialized(img.width(), img.height()).unwrap() };
 
     let domain = img.domain();
 
