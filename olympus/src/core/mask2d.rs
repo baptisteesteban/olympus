@@ -1,11 +1,19 @@
 use crate::{Point2d, Window};
 
+/// Implementation of a 2D mask that acts as a window (meaning that the elements
+/// of the mask generate point offsets from the middle point).
 #[derive(Clone)]
 pub struct Mask2d {
     offsets: Vec<Point2d>,
 }
 
 impl Mask2d {
+    /// Build a new 2D mask.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if the mask shapes are not even or if the number of
+    /// elements is different from the number of elements in the given vector.
     pub fn new(v: Vec<bool>, width: i32, height: i32) -> Result<Mask2d, String> {
         let mut res = Mask2d {
             offsets: Vec::<Point2d>::new(),
@@ -32,6 +40,11 @@ impl Mask2d {
         Ok(res)
     }
 
+    /// Generates a mask with a cross shape.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if the mask creation fails (may not happen).
     pub fn cross(width: i32, height: i32) -> Result<Mask2d, String> {
         let (x_center, y_center) = (width / 2, height / 2);
 
@@ -39,7 +52,7 @@ impl Mask2d {
         for y in 0..height {
             for x in 0..width {
                 if x == x_center || y == y_center {
-                    *mask.get_mut((y * width + x) as usize).unwrap() = true;
+                    mask[(y * width + x) as usize] = true;
                 }
             }
         }
@@ -47,13 +60,21 @@ impl Mask2d {
         Mask2d::new(mask, width, height)
     }
 
+    /// Generates a mask with a rectangular shape.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if the mask creation fails (may not happen).
     pub fn rect(width: i32, height: i32) -> Result<Mask2d, String> {
         let mask: Vec<bool> = vec![true; (width * height) as usize];
         Mask2d::new(mask, width, height)
     }
 }
 
+/// Implementation of the window trait.
 impl Window for Mask2d {
+    /// Apply the mask at a given point `p` and returns an iterator which
+    /// iterates over the different points of the window.
     fn apply(&self, p: &Point2d) -> impl Iterator<Item = Point2d> {
         Mask2dApplyIterator::new(*p, self)
     }
