@@ -5,7 +5,7 @@ use std::{
     ops::{Add, Index, IndexMut, Sub},
 };
 
-use crate::{core::image::details::NDBuffer, fill, Box2d, Point2d};
+use crate::{core::image::details::NDBuffer, fill, Box2d, Domain, Point2d};
 
 /// Implementation of an image defined on a 2D regular grid whose values,
 /// encoded by the type `T`, are stored in a contiguous buffer.

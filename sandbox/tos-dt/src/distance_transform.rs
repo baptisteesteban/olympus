@@ -1,4 +1,4 @@
-use olympus::{fill, BoundedValueSet, Image2d, Point2d, Window, C4};
+use olympus::{fill, BoundedValueSet, Domain, Image2d, Point2d, Window, C4};
 
 use crate::{DistanceHQueue, Range};
 
