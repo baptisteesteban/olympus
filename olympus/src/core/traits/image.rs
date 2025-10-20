@@ -19,6 +19,11 @@ pub trait Image: Index<<Self::Domain as Domain>::Point, Output = Self::Value> {
 pub trait ImageMut:
     Image + IndexMut<<Self::Domain as Domain>::Point, Output = Self::Value>
 {
+    type ChangeValue<V>: ImageMut<Value = V, Domain = Self::Domain>;
+
     // Safe mutable accessor to a value of an image.
     fn at_mut(&mut self, p: &<Self::Domain as Domain>::Point) -> Option<&mut Self::Value>;
+
+    /// Change the value type of an image and returns the resulting image
+    fn imchvalue<V>(&self) -> Self::ChangeValue<V>;
 }

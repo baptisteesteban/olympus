@@ -34,9 +34,15 @@ impl<T> Image for Image2d<T> {
 }
 
 impl<T> ImageMut for Image2d<T> {
+    type ChangeValue<V> = Image2d<V>;
+
     #[inline]
     fn at_mut(&mut self, p: &Point2d) -> Option<&mut T> {
         self.get_mut(p.x, p.y)
+    }
+
+    fn imchvalue<V>(&self) -> Self::ChangeValue<V> {
+        unsafe { Image2d::<V>::new_uninitialized(self.width(), self.height()).unwrap() }
     }
 }
 

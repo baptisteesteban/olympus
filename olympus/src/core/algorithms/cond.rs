@@ -1,17 +1,16 @@
-use crate::{Image, Image2d, Point2d};
+use crate::{Domain, ImageMut, SizedDomain};
 
 /// Apply a predication `f` on the image `img` and returns an image whose pixels
 /// are set to `true` if the predicate is valid, `false` otherwise.
-///
-/// # Panics
-///
-/// This function panics if the output image construction fails.
-pub fn cond<V, F>(img: &Image2d<V>, f: F) -> Image2d<bool>
+pub fn cond<I, F>(img: &I, f: F) -> I::ChangeValue<bool>
 where
-    F: Fn(&Point2d, &V) -> bool,
+    I: ImageMut,
+    I::Domain: SizedDomain,
+    <I::Domain as Domain>::Point: Copy,
+    F: Fn(&<I::Domain as Domain>::Point, &I::Value) -> bool,
 {
-    let mut res = unsafe { Image2d::<bool>::new_uninitialized(img.width(), img.height()).unwrap() };
-    for p in *img.domain() {
+    let mut res = img.imchvalue::<bool>();
+    for p in img.domain().clone() {
         res[p] = f(&p, &img[p]);
     }
     res

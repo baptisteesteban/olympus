@@ -1,13 +1,26 @@
 use std::ops::{Index, IndexMut};
 
-use crate::{Domain, Image, ImageMut, NodeDomain, SizedDomain};
+use crate::{core::image::details::NDBuffer, Domain, Image, ImageMut, NodeDomain, SizedDomain};
 
 pub struct NodeImage<T> {
     domain: NodeDomain,
-    values: Vec<T>,
+    values: NDBuffer<T>,
 }
 
 impl<T> NodeImage<T> {
+    /// Build a new `NodeImage` for a domain.
+    ///
+    /// # Safety
+    ///
+    /// The value array is uninitialized and may lead to undefined behavior if it is not initialized before
+    pub unsafe fn new_uninitialized(domain: NodeDomain) -> NodeImage<T> {
+        let size = domain.size();
+        NodeImage {
+            domain,
+            values: NDBuffer::new_with_capacity(size),
+        }
+    }
+
     pub fn new(domain: NodeDomain, values: Vec<T>) -> Result<NodeImage<T>, String> {
         if domain.size() != values.len() {
             return Err(format!(
@@ -16,7 +29,11 @@ impl<T> NodeImage<T> {
                 domain.size()
             ));
         }
-        Ok(NodeImage { domain, values })
+        let mut res = unsafe { NodeImage::<T>::new_uninitialized(domain) };
+        for (i, v) in values.into_iter().enumerate() {
+            res[i as i32] = v;
+        }
+        Ok(res)
     }
 }
 
@@ -54,11 +71,17 @@ impl<T> Image for NodeImage<T> {
 }
 
 impl<T> ImageMut for NodeImage<T> {
+    type ChangeValue<V> = NodeImage<V>;
+
     fn at_mut(&mut self, p: &<Self::Domain as Domain>::Point) -> Option<&mut Self::Value> {
         if !self.domain.has(p) {
             None
         } else {
             Some(&mut self[*p])
         }
+    }
+
+    fn imchvalue<V>(&self) -> Self::ChangeValue<V> {
+        unsafe { NodeImage::<V>::new_uninitialized(self.domain.clone()) }
     }
 }
