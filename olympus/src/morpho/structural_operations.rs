@@ -11,11 +11,13 @@ impl<T: Ord + Copy> WindowOperation<T> for ErosionOperation<T> {
     }
 }
 
-pub fn erosion<T>(img: &Image2d<T>, mask: &Mask2d) -> Image2d<T>
+/// Perform a morphological erosion on the image `img` using the structuring
+/// element `se`.
+pub fn erosion<T>(img: &Image2d<T>, se: &Mask2d) -> Image2d<T>
 where
     T: Default + Copy + Ord,
 {
-    sliding_window::<T, Mask2d, ErosionOperation<T>>(img, mask)
+    sliding_window::<T, Mask2d, ErosionOperation<T>>(img, se)
 }
 
 struct DilationOperation<T> {
@@ -28,53 +30,65 @@ impl<T: Ord + Copy> WindowOperation<T> for DilationOperation<T> {
     }
 }
 
-pub fn dilation<T>(img: &Image2d<T>, mask: &Mask2d) -> Image2d<T>
+/// Perform a morphological dilation on the image `img` using the structuring
+/// element `se`.
+pub fn dilation<T>(img: &Image2d<T>, se: &Mask2d) -> Image2d<T>
 where
     T: Default + Copy + Ord,
 {
-    sliding_window::<T, Mask2d, DilationOperation<T>>(img, mask)
+    sliding_window::<T, Mask2d, DilationOperation<T>>(img, se)
 }
 
-pub fn opening<T>(img: &Image2d<T>, mask: &Mask2d) -> Image2d<T>
+/// Perform a morphological opening on the image `img` using the structuring
+/// element `se`.
+pub fn opening<T>(img: &Image2d<T>, se: &Mask2d) -> Image2d<T>
 where
     T: Default + Copy + Ord,
 {
-    let inter = erosion(img, mask);
-    dilation(&inter, mask)
+    let inter = erosion(img, se);
+    dilation(&inter, se)
 }
 
-pub fn closing<T>(img: &Image2d<T>, mask: &Mask2d) -> Image2d<T>
+/// Perform a morphological closing on the image `img` using the structuring
+/// element `se`.
+pub fn closing<T>(img: &Image2d<T>, se: &Mask2d) -> Image2d<T>
 where
     T: Default + Copy + Ord,
 {
-    let inter = dilation(img, mask);
-    erosion(&inter, mask)
+    let inter = dilation(img, se);
+    erosion(&inter, se)
 }
 
-pub fn gradient<T>(img: &Image2d<T>, mask: &Mask2d) -> Image2d<<T as Sub>::Output>
+/// Perform a morphological gradient on the image `img` using the structuring
+/// element `se`.
+pub fn gradient<T>(img: &Image2d<T>, se: &Mask2d) -> Image2d<<T as Sub>::Output>
 where
     T: Default + Copy + Ord + Sub,
     <T as Sub>::Output: Default + Copy,
 {
-    let dil = dilation(img, mask);
-    let ero = erosion(img, mask);
+    let dil = dilation(img, se);
+    let ero = erosion(img, se);
     dil - ero
 }
 
-pub fn internal_gradient<T>(img: &Image2d<T>, mask: &Mask2d) -> Image2d<<T as Sub>::Output>
+/// Perform a morphological internal gradient on the image `img` using the
+/// structuring element `se`.
+pub fn internal_gradient<T>(img: &Image2d<T>, se: &Mask2d) -> Image2d<<T as Sub>::Output>
 where
     T: Default + Copy + Ord + Sub,
     <T as Sub>::Output: Default + Copy,
 {
-    let ero = erosion(img, mask);
+    let ero = erosion(img, se);
     img.clone() - ero
 }
 
-pub fn external_gradient<T>(img: &Image2d<T>, mask: &Mask2d) -> Image2d<<T as Sub>::Output>
+/// Perform a morphological external gradient on the image `img` using the
+/// structuring element `se`.
+pub fn external_gradient<T>(img: &Image2d<T>, se: &Mask2d) -> Image2d<<T as Sub>::Output>
 where
     T: Default + Copy + Ord + Sub,
     <T as Sub>::Output: Default + Copy,
 {
-    let dil = dilation(img, mask);
+    let dil = dilation(img, se);
     dil - img.clone()
 }

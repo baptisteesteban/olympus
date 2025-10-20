@@ -51,6 +51,7 @@ impl ImageReaderDispatch for Image2d<Rgb8> {
     }
 }
 
+/// Read an image from `filename` and store its data in `img`.
 pub fn imread<I: ImageReaderDispatch>(filename: &str, img: &mut I) -> Result<(), String> {
     img.read(filename)
 }
