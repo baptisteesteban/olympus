@@ -38,6 +38,7 @@ impl ImageWriterDispatch for Image2d<Rgb8> {
     }
 }
 
+/// Save the image `img` into the file `filename`.
 pub fn imsave<I: ImageWriterDispatch>(filename: &str, img: &I) -> Result<(), String> {
     img.save(filename)
 }

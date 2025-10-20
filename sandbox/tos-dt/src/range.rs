@@ -1,5 +1,6 @@
 use std::fmt::Display;
 
+/// Simple implementation of a range defined by `[l - h]`.
 #[derive(Debug, Clone)]
 pub struct Range<V>
 where

@@ -1,12 +1,18 @@
-// Definition of traits
-
+/// The trait `Value` represents the set of some values
 pub trait Value {}
+
+/// The trait `Number` is implemented by the set of value types that represent a
+/// Number (typically in ℝ).
 pub trait Number: Value {}
+/// The trait `Integer` is implemented by integer value types.
 pub trait Integer: Number {}
+/// The trait `Float` is implemented by floating-points value types.
 pub trait Float: Number {}
+/// The trait `UnsignedInteger` is implemented by the set of value types that
+/// represents unsigned integers.
 pub trait UnsignedInteger: Integer {}
 
-// Implementation of traits
+/// We consider that all types are values
 impl<T> Value for T {}
 
 macro_rules! impl_value_traits {
@@ -33,6 +39,8 @@ impl_value_traits!(i64, Number, Integer);
 impl_value_traits!(f32, Number, Float);
 impl_value_traits!(f64, Number, Float);
 
+/// The trait `BoundedValueSet` is implemented by value types that have infimum
+/// and supremum values. *TODO*: Think about algebraic data structure.
 pub trait BoundedValueSet {
     fn inf() -> Self;
     fn sup() -> Self;

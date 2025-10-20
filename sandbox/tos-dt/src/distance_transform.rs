@@ -13,6 +13,11 @@ fn proj(v: u8, a: u8, b: u8) -> u8 {
     }
 }
 
+/// Implementation of the **level lines distance transform** as defined in **The
+/// Tree of Shapes as a distance transform: building the ToS on High-Dynamic
+/// Range images** from Edwin Carlinet and Baptiste Esteban. This distance
+/// transform is only implemented for `u8` images but it is planned to be
+/// extended to other data types.
 pub fn distance_transform(img: &Image2d<Range<u8>>) -> (Image2d<u32>, Image2d<u8>) {
     let mut q = DistanceHQueue::default();
     let mut dt = Image2d::<u32>::new(img.width(), img.height()).unwrap();

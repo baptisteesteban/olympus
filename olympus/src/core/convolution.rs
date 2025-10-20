@@ -1,5 +1,10 @@
 use crate::{Image2d, Mask2d, Window};
 
+/// Performs a Gaussian filter on a 2D image.
+///
+/// # Panics
+///
+/// This function panics if the image fails to build
 pub fn convolution(img: &Image2d<u8>) -> Image2d<u8> {
     let mut res = Image2d::<u8>::new(img.width(), img.height()).unwrap();
 

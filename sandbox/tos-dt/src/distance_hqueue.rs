@@ -1,5 +1,8 @@
 use olympus::Point2d;
 
+/// Implementation of a calendar hierarchical queue as defined in **The Tree of
+/// Shapes as a distance transform: building the ToS on High-Dynamic Range
+/// images** from Edwin Carlinet and Baptiste Esteban.
 pub struct DistanceHQueue {
     queues: [Vec<Point2d>; 256],
     dist: usize,

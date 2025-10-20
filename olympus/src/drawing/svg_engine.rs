@@ -5,6 +5,8 @@ use std::{
 
 use crate::drawing::svg::SVGElement;
 
+/// No documentation will be written for SVG as it will be completely rewitten
+/// using [rust_tizk](https://docs.rs/rust_tikz/latest/rust_tikz/).
 pub struct SVGDrawer {
     width: i32,
     height: i32,
