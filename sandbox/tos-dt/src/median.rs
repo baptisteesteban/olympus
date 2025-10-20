@@ -1,3 +1,5 @@
+/// A simple accumulator to obtain the median value of a set of value. **This is
+/// not optimized !!!**
 #[derive(Default)]
 pub struct MedianAccumulator {
     values: Vec<u8>,

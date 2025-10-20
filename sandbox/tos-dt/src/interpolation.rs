@@ -97,6 +97,7 @@ where
     res
 }
 
+/// Perform a max interpolation in an image `img`.
 pub fn interpolation_max<V>(img: &Image2d<V>) -> Image2d<V>
 where
     V: Default + Clone + Copy + Ord,
@@ -104,6 +105,7 @@ where
     interpolation::<MaxInterpolation<V>, V>(img)
 }
 
+/// Perform a min interpolation in an image `img`.
 pub fn interpolation_min<V>(img: &Image2d<V>) -> Image2d<V>
 where
     V: Default + Clone + Copy + Ord,
@@ -111,6 +113,7 @@ where
     interpolation::<MinInterpolation<V>, V>(img)
 }
 
+/// Perform a median interpolation in an image `img`.
 pub fn interpolation_median(img: &Image2d<u8>) -> Image2d<u8> {
     interpolation::<MedianInterpolation, u8>(img)
 }

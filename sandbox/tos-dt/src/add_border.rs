@@ -2,6 +2,7 @@ use olympus::{Image2d, Point2d};
 
 use crate::MedianAccumulator;
 
+/// Add an artificial border to the image `img` whose value is set to `v`.
 pub fn add_border<V>(img: &Image2d<V>, v: V) -> Image2d<V>
 where
     V: Copy + Default,
@@ -46,6 +47,8 @@ fn get_border_median_value(img: &Image2d<u8>) -> u8 {
     acc.result()
 }
 
+/// Add an artificial border to `img` whose value is set to the median value of
+/// the border of `img`.
 pub fn add_median_border(img: &Image2d<u8>) -> Image2d<u8> {
     let median = get_border_median_value(img);
     add_border(img, median)

@@ -2,6 +2,9 @@ use olympus::Image2d;
 
 use crate::Range;
 
+/// Immerse an image `img` in an interval set-valued map as defined
+/// [here](https://hal.science/hal-00798620/document) and
+/// [here](https://hal.science/hal-00798574v1/file/discreteContinuityISMM2013.pdf).
 pub fn immersion<V>(img: &Image2d<V>) -> Image2d<Range<V>>
 where
     V: Ord + Copy + Default,

@@ -2,6 +2,7 @@ use std::fmt::Display;
 
 use olympus::Image2d;
 
+/// Print a 2D image in a terminal.
 pub fn imprint2d<V>(img: &Image2d<V>)
 where
     V: Display,

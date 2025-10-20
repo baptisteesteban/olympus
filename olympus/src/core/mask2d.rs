@@ -80,6 +80,7 @@ impl Window for Mask2d {
     }
 }
 
+/// The iterator for a `Mask2d` object.
 pub struct Mask2dIterator {
     cur: usize,
     mask: Mask2d,
@@ -115,7 +116,7 @@ impl IntoIterator for Mask2d {
     }
 }
 
-pub struct Mask2dApplyIterator {
+struct Mask2dApplyIterator {
     p_ref: Point2d,
     it: Mask2dIterator,
 }

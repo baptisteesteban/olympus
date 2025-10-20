@@ -1,5 +1,6 @@
 use olympus::Point2d;
 
+/// Implementation of a Hierarchical Queue priority queue.
 pub struct HQueue {
     queues: [Vec<Point2d>; 256],
     cur: usize,
