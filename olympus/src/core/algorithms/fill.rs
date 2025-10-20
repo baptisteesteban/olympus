@@ -1,11 +1,13 @@
-use crate::{Image, Image2d};
+use crate::{ImageMut, SizedDomain};
 
 /// Fill an image `img` with the value `v` set to all its pixels.
-pub fn fill<V>(img: &mut Image2d<V>, v: V)
+pub fn fill<I>(img: &mut I, v: I::Value)
 where
-    V: Copy,
+    I: ImageMut,
+    I::Domain: SizedDomain,
+    I::Value: Copy,
 {
-    for p in *img.domain() {
+    for p in img.domain().clone() {
         img[p] = v;
     }
 }
