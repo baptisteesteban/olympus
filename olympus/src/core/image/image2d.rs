@@ -26,6 +26,11 @@ impl<T> Image for Image2d<T> {
     fn at(&self, p: &Point2d) -> Option<&T> {
         self.get(p.x, p.y)
     }
+
+    #[inline]
+    fn domain(&self) -> &Self::Domain {
+        &self.domain
+    }
 }
 
 impl<T> ImageMut for Image2d<T> {
@@ -147,11 +152,6 @@ impl<T> Image2d<T> {
     #[inline]
     pub unsafe fn at_unchecked_mut(&mut self, p: &Point2d) -> &mut T {
         self.get_unchecked_mut(p.x, p.y)
-    }
-
-    /// Returns the domain of the image.
-    pub fn domain(&self) -> &Box2d {
-        &self.domain
     }
 }
 

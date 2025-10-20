@@ -1,4 +1,4 @@
-use crate::{Domain, Image2d, Mask2d, Window};
+use crate::{Domain, Image, Image2d, Mask2d, Window};
 
 /// This trait defines the operation to be applied in the sliding window algorithmic canvas.
 pub trait WindowOperation<T: Ord + Copy> {

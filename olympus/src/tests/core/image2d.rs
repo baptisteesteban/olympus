@@ -1,4 +1,4 @@
-use crate::Image2d;
+use crate::{Image, Image2d};
 
 #[test]
 fn test_image2d() {

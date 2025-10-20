@@ -9,6 +9,9 @@ pub trait Image: Index<<Self::Domain as Domain>::Point, Output = Self::Value> {
     /// Value set of an image.
     type Value: Value;
 
+    /// Accessor to the domain of an image.
+    fn domain(&self) -> &Self::Domain;
+    /// Safe accessor to a value of an image.
     fn at(&self, p: &<Self::Domain as Domain>::Point) -> Option<&Self::Value>;
 }
 
@@ -16,5 +19,6 @@ pub trait Image: Index<<Self::Domain as Domain>::Point, Output = Self::Value> {
 pub trait ImageMut:
     Image + IndexMut<<Self::Domain as Domain>::Point, Output = Self::Value>
 {
+    // Safe mutable accessor to a value of an image.
     fn at_mut(&mut self, p: &<Self::Domain as Domain>::Point) -> Option<&mut Self::Value>;
 }

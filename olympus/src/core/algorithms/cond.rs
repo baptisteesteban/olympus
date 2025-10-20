@@ -1,4 +1,4 @@
-use crate::{Image2d, Point2d};
+use crate::{Image, Image2d, Point2d};
 
 /// Apply a predication `f` on the image `img` and returns an image whose pixels
 /// are set to `true` if the predicate is valid, `false` otherwise.

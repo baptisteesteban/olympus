@@ -1,6 +1,6 @@
 use olympus::{
     morpho::{maxtree, ComponentTree},
-    Image2d, C4,
+    Image, Image2d, C4,
 };
 
 use crate::{distance_transform, immersion};

@@ -1,4 +1,4 @@
-use crate::Image2d;
+use crate::{Image, Image2d};
 
 /// Returns an image whose value at a given pixel `p` is set to `yes` if the
 /// value of `img` is `true` at pixel `p`, otherwise the value is set to `no`.

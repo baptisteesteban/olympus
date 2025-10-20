@@ -1,4 +1,4 @@
-use olympus::Image2d;
+use olympus::{Image, Image2d};
 
 use crate::Range;
 

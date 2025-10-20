@@ -1,4 +1,4 @@
-use olympus::{Image2d, Point2d};
+use olympus::{Image, Image2d, Point2d};
 
 use crate::MedianAccumulator;
 

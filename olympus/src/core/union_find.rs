@@ -1,4 +1,4 @@
-use crate::{Domain, Image2d, Point2d};
+use crate::{Domain, Image, Image2d, Point2d};
 
 // TODO: Maybe using the Index and MutableIndex trait would be better than this. To investigate !!!
 
