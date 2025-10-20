@@ -12,7 +12,10 @@ pub struct Normalizer<V: Ord + BoundedValueSet + Sub<Output = V> + Into<f64> + C
 
 impl<V: Ord + BoundedValueSet + Sub<Output = V> + Into<f64> + Clone> Normalizer<V> {
     /// Creates a new `Normalizer` object from a set of values.
-    pub fn new(values: impl Iterator<Item = V>) -> Normalizer<V> {
+    pub fn new<'a>(values: impl Iterator<Item = &'a V>) -> Normalizer<V>
+    where
+        V: 'a,
+    {
         let mut min = <V as BoundedValueSet>::sup();
         let mut max = <V as BoundedValueSet>::inf();
 

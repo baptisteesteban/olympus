@@ -172,7 +172,7 @@ where
     W: Display + Ord + BoundedValueSet + Sub<Output = W> + Into<f64> + Clone,
 {
     fn to_dot(&self) -> String {
-        let normalize = Normalizer::new(self.w.clone().into_iter());
+        let normalize = Normalizer::new(self.w.iter());
         let mut res = String::from("graph G {\n");
         for n in self.nodes() {
             res.push_str(format!("\t{} [label=\"{}\" shape=\"circle\"]\n", n, n).as_str());

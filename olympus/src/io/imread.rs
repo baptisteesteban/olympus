@@ -13,10 +13,12 @@ impl ImageReaderDispatch for Image2d<u8> {
         if in_buffer.is_none() {
             return Err(String::from("Input image is not u8 image"));
         }
-        self.resize(
-            in_img.as_ref().unwrap().width() as i32,
-            in_img.as_ref().unwrap().height() as i32,
-        );
+        unsafe {
+            self.resize(
+                in_img.as_ref().unwrap().width() as i32,
+                in_img.as_ref().unwrap().height() as i32,
+            );
+        }
         for y in 0..self.height() {
             for x in 0..self.width() {
                 self[(x, y)] = in_buffer.unwrap().get_pixel(x as u32, y as u32).0[0];
@@ -36,10 +38,12 @@ impl ImageReaderDispatch for Image2d<Rgb8> {
         if in_buffer.is_none() {
             return Err(String::from("Input image is ot rgb8 image"));
         }
-        self.resize(
-            in_img.as_ref().unwrap().width() as i32,
-            in_img.as_ref().unwrap().height() as i32,
-        );
+        unsafe {
+            self.resize(
+                in_img.as_ref().unwrap().width() as i32,
+                in_img.as_ref().unwrap().height() as i32,
+            );
+        }
         for y in 0..self.height() {
             for x in 0..self.width() {
                 self[(x, y)].r = in_buffer.as_ref().unwrap().get_pixel(x as u32, y as u32).0[0];

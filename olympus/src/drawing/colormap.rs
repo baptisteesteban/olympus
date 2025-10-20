@@ -14,7 +14,8 @@ where
     F: Fn(f64) -> Rgb8,
 {
     let normalize = Normalizer::new(img.values());
-    let mut res: Image2d<Rgb8> = Image2d::new(img.width(), img.height()).unwrap();
+    let mut res: Image2d<Rgb8> =
+        unsafe { Image2d::new_uninitialized(img.width(), img.height()).unwrap() };
     for p in *img.domain() {
         res[p] = colormap(normalize.apply(&img[p]));
     }

@@ -9,13 +9,13 @@ pub fn immersion<V>(img: &Image2d<V>) -> Image2d<Range<V>>
 where
     V: Ord + Copy + Default,
 {
-    let mut res = Image2d::<Range<V>>::new(2 * img.width() - 1, 2 * img.height() - 1).unwrap();
+    let mut res = unsafe {
+        Image2d::<Range<V>>::new_uninitialized(2 * img.width() - 1, 2 * img.height() - 1).unwrap()
+    };
 
     // 2-faces
     for p in *img.domain() {
-        unsafe {
-            *res.at_unchecked_mut(&(p * 2)) = Range::<V>::new_single_value(*img.at(&p).unwrap());
-        }
+        res[p * 2] = Range::<V>::new_single_value(img[p]);
     }
 
     // 1-faces horizontal

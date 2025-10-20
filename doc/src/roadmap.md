@@ -10,7 +10,7 @@ However, as this library is a Research Driven library, some other
 functionalities may become priorities.
 
 - [X] Implementation of 2D image
-- [ ] Optimization of a 2D image
+- [X] Optimization of a 2D image
 - [ ] Implementation of the concept `Image`.
 - [ ] Implementation of `Image` based on graph domain
     - [ ] Node weighted graph

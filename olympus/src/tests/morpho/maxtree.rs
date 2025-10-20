@@ -26,6 +26,6 @@ fn test_maxtree_c4() {
     assert_eq!(t.nodemap.width(), 5);
     assert_eq!(t.nodemap.height(), 2);
     for (v, v_ref) in zip(t.nodemap.values(), NODEMAP_REF) {
-        assert_eq!(v, v_ref);
+        assert_eq!(*v, v_ref);
     }
 }

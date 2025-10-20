@@ -6,3 +6,8 @@ resolver = "2"
 authors = ["Baptiste Esteban <baptiste.esteban@epita.fr>"]
 edition = "2021"
 version = "0.1.0"
+
+[profile.dev]
+overflow-checks = true
+opt-level = 0
+debug = true

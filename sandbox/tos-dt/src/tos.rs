@@ -20,8 +20,13 @@ pub fn tos(img: &Image2d<u8>) -> ComponentTree<u8> {
 }
 
 pub fn emersion<V>(t: ComponentTree<V>) -> ComponentTree<V> {
-    let mut new_nodemap =
-        Image2d::<usize>::new((t.nodemap.width() + 1) / 2, (t.nodemap.height() + 1) / 2).unwrap();
+    let mut new_nodemap = unsafe {
+        Image2d::<usize>::new_uninitialized(
+            (t.nodemap.width() + 1) / 2,
+            (t.nodemap.height() + 1) / 2,
+        )
+        .unwrap()
+    };
     for p in *new_nodemap.domain() {
         new_nodemap[p] = t.nodemap[p * 2];
     }

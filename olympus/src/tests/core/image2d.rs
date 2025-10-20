@@ -2,7 +2,7 @@ use crate::Image2d;
 
 #[test]
 fn test_image2d() {
-    let mut img = Image2d::new(3, 5).unwrap();
+    let mut img = unsafe { Image2d::new_uninitialized(3, 5).unwrap() };
     assert_eq!(img.width(), 3);
     assert_eq!(img.height(), 5);
 
@@ -29,9 +29,20 @@ fn test_image2d() {
 }
 
 #[test]
+fn test_image2d_from_vec() {
+    let v = vec![1, 5, 7, 6, 9, 4];
+    let img = Image2d::from_vec(3, 2, v.clone()).unwrap();
+    for y in 0..img.height() {
+        for x in 0..img.width() {
+            assert_eq!(img[(x, y)], v[(y * img.width() + x) as usize]);
+        }
+    }
+}
+
+#[test]
 fn test_image2d_equality() {
-    let mut img1 = Image2d::new(2, 3).unwrap();
-    let mut img2 = Image2d::new(2, 3).unwrap();
+    let mut img1 = unsafe { Image2d::new_uninitialized(2, 3).unwrap() };
+    let mut img2 = unsafe { Image2d::new_uninitialized(2, 3).unwrap() };
 
     for y in 0..img1.height() {
         for x in 0..img1.width() {
