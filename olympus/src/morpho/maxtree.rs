@@ -1,7 +1,7 @@
 use std::cmp::Ordering;
 
 use crate::morpho::{direct_filter, ComponentTree};
-use crate::{Domain, Image2d, Point2d, UnionFind, Window};
+use crate::{Domain, Image, Image2d, ImageMut, Point2d, UnionFind, Window};
 
 fn sort_points<V, O>(img: &Image2d<V>, ord: O) -> Vec<Point2d>
 where

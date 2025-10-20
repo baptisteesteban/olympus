@@ -1,4 +1,4 @@
-use crate::{Image2d, Point2d};
+use crate::{Image, Image2d, Point2d};
 
 pub struct ComponentTree<V> {
     pub parents: Vec<usize>,

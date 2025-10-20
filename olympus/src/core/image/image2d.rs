@@ -5,7 +5,7 @@ use std::{
     ops::{Add, Index, IndexMut, Sub},
 };
 
-use crate::{core::image::details::NDBuffer, fill, Box2d, Domain, Point2d};
+use crate::{core::image::details::NDBuffer, fill, Box2d, Domain, Image, ImageMut, Point2d};
 
 /// Implementation of an image defined on a 2D regular grid whose values,
 /// encoded by the type `T`, are stored in a contiguous buffer.
@@ -16,6 +16,23 @@ pub struct Image2d<T> {
     domain: Box2d,
     /// The buffer storing the values of the image pixels.
     data: NDBuffer<T>,
+}
+
+impl<T> Image for Image2d<T> {
+    type Domain = Box2d;
+    type Value = T;
+
+    #[inline]
+    fn at(&self, p: &Point2d) -> Option<&T> {
+        self.get(p.x, p.y)
+    }
+}
+
+impl<T> ImageMut for Image2d<T> {
+    #[inline]
+    fn at_mut(&mut self, p: &Point2d) -> Option<&mut T> {
+        self.get_mut(p.x, p.y)
+    }
 }
 
 impl<T> Image2d<T>
@@ -120,16 +137,6 @@ impl<T> Image2d<T> {
     pub unsafe fn get_unchecked_mut(&mut self, x: i32, y: i32) -> &mut T {
         let i = self.point_to_index(x, y);
         self.data.get_unchecked_mut(i as usize)
-    }
-
-    #[inline]
-    pub fn at(&self, p: &Point2d) -> Option<&T> {
-        self.get(p.x, p.y)
-    }
-
-    #[inline]
-    pub fn at_mut(&mut self, p: &Point2d) -> Option<&mut T> {
-        self.get_mut(p.x, p.y)
     }
 
     #[inline]

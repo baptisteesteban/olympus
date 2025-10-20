@@ -1,6 +1,6 @@
 use std::marker::PhantomData;
 
-use olympus::Image2d;
+use olympus::{Image2d, ImageMut};
 
 use crate::MedianAccumulator;
 
