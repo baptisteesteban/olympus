@@ -32,6 +32,8 @@ impl Default for C8Connectivity {
 
 /// Implementation of the `Window` trait.
 impl Window for C8Connectivity {
+    type Point = Point2d;
+
     /// Iterator that iterates over the 8 neighbors of a point `p`.
     fn apply(&self, p: &Point2d) -> impl Iterator<Item = Point2d> {
         Self::OFFSETS.map(|offset| *p + offset).into_iter()
