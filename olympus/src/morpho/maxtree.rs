@@ -9,7 +9,7 @@ where
     O: Fn(&V, &V) -> Ordering,
 {
     let mut sorted_tuples =
-        std::iter::zip(*img.domain(), img.values()).collect::<Vec<(Point2d, V)>>();
+        std::iter::zip(*img.domain(), img.values()).collect::<Vec<(Point2d, &V)>>();
     sorted_tuples.sort_by(|(_, v1), (_, v2)| ord(v1, v2));
     sorted_tuples
         .iter()

@@ -53,14 +53,6 @@ impl<V> NDBuffer<V> {
         res.resize(size);
         res
     }
-
-    pub fn as_ptr(&self) -> *mut V {
-        self.buffer.as_ptr()
-    }
-
-    pub fn size(&self) -> usize {
-        self.size
-    }
 }
 
 impl<V> Drop for NDBuffer<V> {

@@ -150,12 +150,8 @@ impl<T> Image2d<T> {
 
 impl<T: Clone> Image2d<T> {
     /// This function returns an iterator over the image pixel values.
-    pub fn values(&self) -> impl Iterator<Item = T> {
-        let mut vec = Vec::<T>::new();
-        for p in self.domain {
-            vec.push(self[p].clone());
-        }
-        vec.into_iter()
+    pub fn values(&self) -> impl Iterator<Item = &T> {
+        self.data.iter()
     }
 }
 
@@ -165,6 +161,10 @@ impl<T> Image2d<T> {
     /// # Errors
     ///
     /// This function returns an error if the dimensions are incorrect.
+    ///
+    /// # Safety
+    ///
+    /// This function is unsafe as it does not initialize the values of the buffer.
     pub unsafe fn new_uninitialized(width: i32, height: i32) -> Result<Image2d<T>, String> {
         if width < 0 || height < 0 {
             return Err(String::from("Width and height must be superior to 0"));
@@ -175,7 +175,12 @@ impl<T> Image2d<T> {
         })
     }
 
-    pub fn resize(&mut self, width: i32, height: i32) {
+    /// Resize the buffer of the Image2D to have a buffer of size `(width * height)`
+    ///
+    /// # Safety
+    ///
+    /// This function is unsafe as the buffer values are uninitialized.
+    pub unsafe fn resize(&mut self, width: i32, height: i32) {
         self.data.resize((width * height) as usize);
         self.domain = Box2d::new(width, height);
     }
