@@ -6,6 +6,7 @@ pub struct NodeDomain {
 }
 
 impl NodeDomain {
+    /// Create a `NodeDomain` from an adjacency list
     pub fn new(g: AdjacencyList) -> NodeDomain {
         NodeDomain { g }
     }

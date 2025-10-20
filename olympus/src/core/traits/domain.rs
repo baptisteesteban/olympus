@@ -6,7 +6,7 @@ pub trait Domain {
     fn has(&self, p: &Self::Point) -> bool;
 }
 
-pub trait SizedDomain: Domain + IntoIterator<Item = Self::Point> {
+pub trait SizedDomain: Domain + IntoIterator<Item = Self::Point> + Clone {
     /// Return the size of the domain.
     fn size(&self) -> usize;
 }
