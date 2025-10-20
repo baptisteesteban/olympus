@@ -3,12 +3,23 @@ use crate::{
     MutableNodeGraph, ToMutableEdgeWeightedGraph, UnionFind,
 };
 
+/// This trait allows to implement a visitor used in the Kruskal algorithm.
 pub trait KruskalVisitor {
+    /// Perform an operation during the Union-Find make set procedure.
     fn on_make_set(&mut self, n: i32);
+    /// Perform an operation when two sets `a` and `b` are different (and thus
+    /// when the `union` operation is performed on these sets).
     fn on_different_set(&mut self, a: i32, b: i32);
+    /// Perform an operation when two sets `a` and `b` are the same.
     fn on_same_set(&mut self, a: i32, b: i32);
 }
 
+/// Implementation of the minimum spanning tree [Kruskal
+/// algorithm](https://en.wikipedia.org/wiki/Kruskal%27s_algorithm).
+///
+/// It takes a `KruskalVisitor` object to potentially perform other operations
+/// during the construction of the MST (examples are given
+/// [here](https://hal.science/hal-00798621v1/file/ismm2013-algo.pdf))
 pub fn kruskal_impl<
     G: ToMutableEdgeWeightedGraph<Result = impl MutableEdgeWeightedGraph<Weight = G::Weight>>
         + EdgeWeightedGraph,
@@ -46,10 +57,8 @@ where
     res
 }
 
-/*
-* Default implementation of the Kruskal algorithm
-*/
-
+/// Default implementation of the `KruskalVisitor`` trait. Each operation does
+/// nothing.
 struct DefaultKruskalVisitor {}
 impl KruskalVisitor for DefaultKruskalVisitor {
     fn on_make_set(&mut self, _n: i32) {}
@@ -57,6 +66,7 @@ impl KruskalVisitor for DefaultKruskalVisitor {
     fn on_same_set(&mut self, _a: i32, _b: i32) {}
 }
 
+/// Default implementation of the Kruskal algorithm using the `DefaultKruskalVisitor` object.
 pub fn kruskal<
     G: ToMutableEdgeWeightedGraph<Result = impl MutableEdgeWeightedGraph<Weight = G::Weight>>
         + EdgeWeightedGraph,
