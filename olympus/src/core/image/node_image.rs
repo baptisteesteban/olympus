@@ -2,6 +2,7 @@ use std::ops::{Index, IndexMut};
 
 use crate::{core::image::details::NDBuffer, Domain, Image, ImageMut, NodeDomain, SizedDomain};
 
+#[derive(Debug)]
 pub struct NodeImage<T> {
     domain: NodeDomain,
     values: NDBuffer<T>,
@@ -87,5 +88,19 @@ impl<T> ImageMut for NodeImage<T> {
 
     fn duplicate(&self) -> Self {
         unsafe { Self::new_uninitialized(self.domain.clone()) }
+    }
+}
+
+impl<T: PartialEq> PartialEq for NodeImage<T> {
+    fn eq(&self, other: &Self) -> bool {
+        if self.domain.size() != other.domain.size() {
+            return false;
+        }
+        for p in self.domain.clone() {
+            if self[p] != other[p] {
+                return false;
+            }
+        }
+        true
     }
 }
