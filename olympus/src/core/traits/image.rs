@@ -26,4 +26,7 @@ pub trait ImageMut:
 
     /// Change the value type of an image and returns the resulting image
     fn imchvalue<V>(&self) -> Self::ChangeValue<V>;
+
+    /// Build a new image with the same domain as the image but with uninitialzed values.
+    fn duplicate(&self) -> Self;
 }

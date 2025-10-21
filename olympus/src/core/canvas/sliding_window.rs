@@ -1,4 +1,4 @@
-use crate::{Domain, Image, Image2d, Mask2d, Window};
+use crate::{Domain, ImageMut, SizedDomain, Window};
 
 /// This trait defines the operation to be applied in the sliding window algorithmic canvas.
 pub trait WindowOperation<T: Ord + Copy> {
@@ -13,20 +13,22 @@ pub trait WindowOperation<T: Ord + Copy> {
 /// # Panics
 ///
 /// Panics if the output image construction fails.
-pub fn sliding_window<T, M, Op>(img: &Image2d<T>, mask: &Mask2d) -> Image2d<T>
+pub fn sliding_window<I, W, Op>(img: &I, mask: &W) -> I
 where
-    T: Default + Copy + Ord,
-    Op: WindowOperation<T>,
+    I: ImageMut,
+    I::Value: Copy + Ord,
+    I::Domain: SizedDomain,
+    <I::Domain as Domain>::Point: Copy,
+    W: Window<Point = <I::Domain as Domain>::Point>,
+    Op: WindowOperation<I::Value>,
 {
-    let mut res = unsafe { Image2d::new_uninitialized(img.width(), img.height()).unwrap() };
+    let mut res = img.duplicate();
 
-    let domain = img.domain();
-
-    for p in *domain {
+    for p in img.domain().clone() {
         res[p] = img[p];
         for n in mask.apply(&p) {
             let a = res[p];
-            if domain.has(&n) {
+            if img.domain().has(&n) {
                 Op::op(&mut res[p], &a, &img[n]);
             }
         }

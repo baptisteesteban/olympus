@@ -84,4 +84,8 @@ impl<T> ImageMut for NodeImage<T> {
     fn imchvalue<V>(&self) -> Self::ChangeValue<V> {
         unsafe { NodeImage::<V>::new_uninitialized(self.domain.clone()) }
     }
+
+    fn duplicate(&self) -> Self {
+        unsafe { Self::new_uninitialized(self.domain.clone()) }
+    }
 }

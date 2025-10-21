@@ -44,6 +44,10 @@ impl<T> ImageMut for Image2d<T> {
     fn imchvalue<V>(&self) -> Self::ChangeValue<V> {
         unsafe { Image2d::<V>::new_uninitialized(self.width(), self.height()).unwrap() }
     }
+
+    fn duplicate(&self) -> Self {
+        unsafe { Self::new_uninitialized(self.width(), self.height()).unwrap() }
+    }
 }
 
 impl<T> Image2d<T>
