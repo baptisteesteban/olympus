@@ -18,24 +18,26 @@ where
     }
 
     for p in *img.domain() {
-        let mut is_a_minimum = true;
+        let mut is_an_extrema = true;
         for n in nbh.apply(&p) {
             if !img.domain().has(&n) {
                 continue;
             }
 
-            if comp(&img[p], &img[n]) == Ordering::Greater {
-                is_a_minimum = false;
-            } else if comp(&img[n], &img[p]) == Ordering::Greater {
-                let r = uf.find(&n);
-                res[r] = 0;
-            } else {
-                let r1 = uf.find(&p);
-                let r2 = uf.find(&n);
-                uf.union(&r1, &r2);
+            match comp(&img[p], &img[n]) {
+                Ordering::Greater => is_an_extrema = false,
+                Ordering::Less => {
+                    let r = uf.find(&n);
+                    res[r] = 0;
+                }
+                _ => {
+                    let r1 = uf.find(&p);
+                    let r2 = uf.find(&n);
+                    uf.union(&r1, &r2);
+                }
             }
         }
-        if is_a_minimum {
+        if is_an_extrema {
             let r = uf.find(&p);
             res[r] = 1;
         }
