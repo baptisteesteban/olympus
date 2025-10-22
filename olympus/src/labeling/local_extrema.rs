@@ -1,12 +1,12 @@
 use crate::{fill, Domain, Image, Image2d, ImageMut, Point2d, UnionFind, Window};
 
-pub fn local_minima<V, W>(img: &Image2d<V>, nbh: &W) -> Image2d<u8>
+pub fn local_minima<V, W>(img: &Image2d<V>, nbh: &W) -> Image2d<u16>
 where
     V: Ord,
     W: Window<Point = Point2d>,
 {
     // Resulting labelisation
-    let mut res = img.imchvalue::<u8>();
+    let mut res = img.imchvalue::<u16>();
     fill(&mut res, 0);
 
     let mut uf = UnionFind::new(img.imchvalue::<Point2d>());
@@ -34,14 +34,19 @@ where
         }
         if is_a_minimum {
             let r = uf.find(&p);
-            res[r] = 255;
+            res[r] = 1;
         }
     }
 
+    let mut num_label = 1;
     for p in *img.domain() {
         let r = uf.find(&p);
-        if res[r] == 255 {
-            res[p] = 255;
+        if res[r] > 0 {
+            if p == r {
+                res[r] = num_label;
+                num_label += 1;
+            }
+            res[p] = res[r];
         }
     }
 
