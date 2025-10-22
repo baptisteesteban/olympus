@@ -3,7 +3,8 @@ use olympus::{
     drawing::label2rgb,
     io::{imread, imsave},
     labeling::local_minima,
-    Image2d, C4,
+    morpho::{direct_filter, gradient, mintree, reconstruct, watershed_partition},
+    Image2d, Mask2d, C8,
 };
 
 #[derive(Parser)]
@@ -17,6 +18,12 @@ fn main() {
 
     let mut img = Image2d::<u8>::default();
     imread(args.input_filename.as_str(), &mut img).unwrap();
-    let minima = local_minima(&img, &C4);
-    imsave(args.output_filename.as_str(), &label2rgb(&minima)).unwrap();
+    let grad = gradient(&img, &Mask2d::cross(3, 3).unwrap());
+    let mt = mintree(&grad, &C8);
+    let area = mt.compute_area();
+    let mtf = direct_filter(&mt, |n| area[n] >= 1000);
+    let grad_rec = reconstruct(&mtf);
+    let ws = watershed_partition(&grad_rec, &C8);
+    imsave("grad_rec.png", &label2rgb(&local_minima(&grad_rec, &C8))).unwrap();
+    imsave(args.output_filename.as_str(), &label2rgb(&ws)).unwrap();
 }

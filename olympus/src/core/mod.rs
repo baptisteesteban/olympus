@@ -6,8 +6,8 @@ mod image;
 mod mask2d;
 mod neighborhoods;
 mod point;
+mod structures;
 mod traits;
-mod union_find;
 mod value;
 
 pub use algorithms::*;
@@ -18,6 +18,6 @@ pub use image::*;
 pub use mask2d::*;
 pub use neighborhoods::*;
 pub use point::*;
+pub use structures::*;
 pub use traits::*;
-pub use union_find::*;
 pub use value::*;

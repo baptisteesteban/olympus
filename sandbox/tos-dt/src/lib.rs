@@ -1,7 +1,6 @@
 mod add_border;
 mod distance_hqueue;
 mod distance_transform;
-mod hqueue;
 mod immersion;
 mod interpolation;
 mod median;
@@ -11,7 +10,6 @@ mod tos;
 pub use add_border::{add_border, add_median_border};
 pub use distance_hqueue::DistanceHQueue;
 pub use distance_transform::distance_transform;
-pub use hqueue::HQueue;
 pub use immersion::immersion;
 pub use interpolation::*;
 pub use median::MedianAccumulator;
