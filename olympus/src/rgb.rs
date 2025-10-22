@@ -1,5 +1,5 @@
 /// Implementation of the (R, G, B) triple for any type.
-#[derive(Clone)]
+#[derive(PartialEq, Debug, Clone, Copy)]
 pub struct Rgb<T> {
     pub r: T,
     pub g: T,

@@ -1,6 +1,7 @@
 use crate::{
+    graph::AdjacencyList,
     morpho::{closing, dilation, erosion, opening},
-    Image2d, Mask2d,
+    Image, Image2d, Mask2d, MutableEdgeGraph, MutableNodeGraph, NodeDomain, NodeImage, NodeToNode,
 };
 
 #[test]
@@ -110,5 +111,26 @@ fn test_closing2d() {
 
     let se = Mask2d::cross(3, 3).unwrap();
     let res = closing(&img, &se);
+    assert_eq!(res, ref_res);
+}
+
+#[test]
+fn test_erosion_node_graph_image() {
+    let mut g = AdjacencyList::default();
+    let n1 = g.add_node();
+    let n2 = g.add_node();
+    let n3 = g.add_node();
+    let n4 = g.add_node();
+
+    g.add_edge(n1, n2).unwrap();
+    g.add_edge(n1, n3).unwrap();
+    g.add_edge(n1, n4).unwrap();
+
+    let img = NodeImage::<u8>::new(NodeDomain::new(g.clone()), vec![10, 14, 7, 2]).unwrap();
+    let ref_res = NodeImage::<u8>::new(NodeDomain::new(g), vec![2, 10, 7, 2]).unwrap();
+
+    let nbh = NodeToNode::new(img.domain());
+    let res = erosion(&img, &nbh);
+
     assert_eq!(res, ref_res);
 }

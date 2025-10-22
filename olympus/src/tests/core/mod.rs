@@ -1,3 +1,4 @@
-mod box2d;
-mod c4;
-mod image2d;
+mod algorithms;
+mod domains;
+mod images;
+mod neighborhoods;

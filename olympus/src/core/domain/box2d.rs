@@ -1,4 +1,4 @@
-use crate::Point2d;
+use crate::{Domain, Point2d, ShapeDomain, SizedDomain};
 
 /// This structure represents a domain defined on a 2D regular grid.
 #[derive(Debug, Clone, Copy)]
@@ -24,15 +24,35 @@ impl Box2d {
     pub fn height(&self) -> i32 {
         self.height
     }
+}
+
+impl Domain for Box2d {
+    type Point = Point2d;
 
     /// Check if a point `p` belongs to the domain.
-    pub fn has(&self, p: &Point2d) -> bool {
+    fn has(&self, p: &Self::Point) -> bool {
         self.width > 0
             && self.height > 0
             && p.x >= 0
             && p.y >= 0
             && p.x < self.width
             && p.y < self.height
+    }
+}
+
+impl SizedDomain for Box2d {
+    fn size(&self) -> usize {
+        (self.width * self.height) as usize
+    }
+}
+
+impl ShapeDomain for Box2d {
+    fn shape(&self, i: usize) -> Option<usize> {
+        match i {
+            0 => Some(self.width as usize),
+            1 => Some(self.height as usize),
+            _ => None,
+        }
     }
 }
 

@@ -1,4 +1,4 @@
-# Roadmap for Olympus 0.1
+# Roadmap to Olympus 0.1
 
 The objectives of the first version of Olympus is to give a proof of concept of
 a generic image processing library in Rust. To this aim, we plan to implement
@@ -11,14 +11,14 @@ functionalities may become priorities.
 
 - [X] Implementation of 2D image
 - [X] Optimization of a 2D image
-- [ ] Implementation of the concept `Image`.
+- [X] Implementation of the trait `Image`.
 - [ ] Implementation of `Image` based on graph domain
-    - [ ] Node weighted graph
+    - [X] Node weighted graph
     - [ ] Edge weighted graph
 - [ ] Implementation of simplicial complexes
 - [ ] Implementation of `Image` based simplicial complexes
 - [X] Implementation of morphological operations.
-    - [ ] Make it generic for any kind of `Image`
+    - [X] Make it generic for any kind of `Image`
 - [X] Implementation of morphological connected operators (based on Maxtree).
     - [ ] Make it generic for any kind of `Image`
 - [ ] Implementation of the morphological watershed from Meyer

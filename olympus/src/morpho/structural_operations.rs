@@ -1,6 +1,6 @@
 use std::{marker::PhantomData, ops::Sub};
 
-use crate::{sliding_window, Image2d, Mask2d, WindowOperation};
+use crate::{sliding_window, Domain, Image, ImageMut, SizedDomain, Window, WindowOperation};
 
 struct ErosionOperation<T> {
     _v: PhantomData<T>,
@@ -13,11 +13,15 @@ impl<T: Ord + Copy> WindowOperation<T> for ErosionOperation<T> {
 
 /// Perform a morphological erosion on the image `img` using the structuring
 /// element `se`.
-pub fn erosion<T>(img: &Image2d<T>, se: &Mask2d) -> Image2d<T>
+pub fn erosion<I, W>(img: &I, se: &W) -> I
 where
-    T: Default + Copy + Ord,
+    I: ImageMut,
+    I::Value: Copy + Ord,
+    I::Domain: SizedDomain,
+    <I::Domain as Domain>::Point: Copy,
+    W: Window<Point = <I::Domain as Domain>::Point>,
 {
-    sliding_window::<T, Mask2d, ErosionOperation<T>>(img, se)
+    sliding_window::<I, W, ErosionOperation<<I as Image>::Value>>(img, se)
 }
 
 struct DilationOperation<T> {
@@ -32,18 +36,26 @@ impl<T: Ord + Copy> WindowOperation<T> for DilationOperation<T> {
 
 /// Perform a morphological dilation on the image `img` using the structuring
 /// element `se`.
-pub fn dilation<T>(img: &Image2d<T>, se: &Mask2d) -> Image2d<T>
+pub fn dilation<I, W>(img: &I, se: &W) -> I
 where
-    T: Default + Copy + Ord,
+    I: ImageMut,
+    I::Value: Copy + Ord,
+    I::Domain: SizedDomain,
+    <I::Domain as Domain>::Point: Copy,
+    W: Window<Point = <I::Domain as Domain>::Point>,
 {
-    sliding_window::<T, Mask2d, DilationOperation<T>>(img, se)
+    sliding_window::<I, W, DilationOperation<<I as Image>::Value>>(img, se)
 }
 
 /// Perform a morphological opening on the image `img` using the structuring
 /// element `se`.
-pub fn opening<T>(img: &Image2d<T>, se: &Mask2d) -> Image2d<T>
+pub fn opening<I, W>(img: &I, se: &W) -> I
 where
-    T: Default + Copy + Ord,
+    I: ImageMut,
+    I::Value: Copy + Ord,
+    I::Domain: SizedDomain,
+    <I::Domain as Domain>::Point: Copy,
+    W: Window<Point = <I::Domain as Domain>::Point>,
 {
     let inter = erosion(img, se);
     dilation(&inter, se)
@@ -51,9 +63,13 @@ where
 
 /// Perform a morphological closing on the image `img` using the structuring
 /// element `se`.
-pub fn closing<T>(img: &Image2d<T>, se: &Mask2d) -> Image2d<T>
+pub fn closing<I, W>(img: &I, se: &W) -> I
 where
-    T: Default + Copy + Ord,
+    I: ImageMut,
+    I::Value: Copy + Ord,
+    I::Domain: SizedDomain,
+    <I::Domain as Domain>::Point: Copy,
+    W: Window<Point = <I::Domain as Domain>::Point>,
 {
     let inter = dilation(img, se);
     erosion(&inter, se)
@@ -61,10 +77,14 @@ where
 
 /// Perform a morphological gradient on the image `img` using the structuring
 /// element `se`.
-pub fn gradient<T>(img: &Image2d<T>, se: &Mask2d) -> Image2d<<T as Sub>::Output>
+pub fn gradient<I, W, O>(img: &I, se: &W) -> O
 where
-    T: Default + Copy + Ord + Sub,
-    <T as Sub>::Output: Default + Copy,
+    I: ImageMut + Sub<Output = O>,
+    I::Value: Copy + Ord + Sub,
+    I::Domain: SizedDomain,
+    <I::Domain as Domain>::Point: Copy,
+    W: Window<Point = <I::Domain as Domain>::Point>,
+    O: ImageMut<Domain = I::Domain, Value = <I::Value as Sub>::Output>,
 {
     let dil = dilation(img, se);
     let ero = erosion(img, se);

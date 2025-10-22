@@ -1,4 +1,4 @@
-use crate::{Box2d, Point2d};
+use crate::{Box2d, Domain, Point2d, ShapeDomain, SizedDomain};
 
 #[test]
 fn test_point2d() {
@@ -37,10 +37,19 @@ fn test_box2d_iterator() {
         Point2d::new(1, 1),
         Point2d::new(2, 1),
     ];
-    let mut i = 0;
-    for p in d {
+
+    for (i, p) in d.into_iter().enumerate() {
         assert_eq!(p, ref_points[i]);
-        i += 1;
     }
-    assert_eq!(i, 6);
+}
+
+#[test]
+fn test_domain_traits() {
+    let domain = Box2d::new(3, 7);
+    assert_eq!(domain.shape(0).unwrap(), 3);
+    assert_eq!(domain.shape(1).unwrap(), 7);
+    assert!(domain.shape(2).is_none());
+    assert_eq!(domain.size(), 21);
+    assert!(domain.has(&Point2d::new(0, 0)));
+    assert!(!domain.has(&Point2d::new(2, 7)));
 }

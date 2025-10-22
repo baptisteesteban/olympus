@@ -1,4 +1,4 @@
-use crate::{Image2d, Mask2d, Window};
+use crate::{Domain, Image, Image2d, Mask2d, Window};
 
 /// Performs a Gaussian filter on a 2D image.
 ///

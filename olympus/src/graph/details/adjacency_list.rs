@@ -9,7 +9,7 @@ use crate::{
 
 use std::cmp::{max, min};
 
-#[derive(Default)]
+#[derive(Default, Clone, Debug)]
 pub struct AdjacencyList {
     edges: Vec<Edge>,
     adjacency: Vec<Vec<i32>>,

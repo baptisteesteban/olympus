@@ -1,7 +1,7 @@
 use std::cmp::Ordering;
 
 use crate::morpho::{direct_filter, ComponentTree};
-use crate::{Image2d, Point2d, UnionFind, Window};
+use crate::{Domain, Image, Image2d, ImageMut, Point2d, UnionFind, Window};
 
 fn sort_points<V, O>(img: &Image2d<V>, ord: O) -> Vec<Point2d>
 where
@@ -20,7 +20,7 @@ where
 fn union_find<V, C>(sorted: &[Point2d], img: &Image2d<V>, nbh: &C) -> ComponentTree<V>
 where
     V: Copy,
-    C: Window,
+    C: Window<Point = Point2d>,
 {
     let mut deja_vu = Image2d::<bool>::new_with_value(img.width(), img.height(), false).unwrap();
     let mut nodemap =
@@ -66,7 +66,7 @@ where
 pub fn maxtree<V, C>(img: &Image2d<V>, nbh: &C) -> ComponentTree<V>
 where
     V: Ord + Copy + Default,
-    C: Window,
+    C: Window<Point = Point2d>,
 {
     let sorted = sort_points(img, |v1, v2| v2.cmp(v1));
     let t1 = union_find(&sorted, img, nbh);
@@ -76,7 +76,7 @@ where
 pub fn mintree<V, C>(img: &Image2d<V>, nbh: &C) -> ComponentTree<V>
 where
     V: Ord + Copy + Default,
-    C: Window,
+    C: Window<Point = Point2d>,
 {
     let sorted = sort_points(img, |v1, v2| v1.cmp(v2));
     let t1 = union_find(&sorted, img, nbh);

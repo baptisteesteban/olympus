@@ -1,6 +1,6 @@
 use std::ops::Sub;
 
-use crate::{drawing::Normalizer, BoundedValueSet, Image2d, Rgb8};
+use crate::{drawing::Normalizer, BoundedValueSet, Image, Image2d, Rgb8};
 
 /// Apply a color map to an image.
 ///

@@ -73,9 +73,11 @@ impl Mask2d {
 
 /// Implementation of the window trait.
 impl Window for Mask2d {
+    type Point = Point2d;
+
     /// Apply the mask at a given point `p` and returns an iterator which
     /// iterates over the different points of the window.
-    fn apply(&self, p: &Point2d) -> impl Iterator<Item = Point2d> {
+    fn apply(&self, p: &Self::Point) -> impl Iterator<Item = Self::Point> {
         Mask2dApplyIterator::new(*p, self)
     }
 }
