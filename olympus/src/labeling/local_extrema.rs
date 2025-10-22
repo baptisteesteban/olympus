@@ -1,9 +1,12 @@
+use std::cmp::Ordering;
+
 use crate::{fill, Domain, Image, Image2d, ImageMut, Point2d, UnionFind, Window};
 
-pub fn local_minima<V, W>(img: &Image2d<V>, nbh: &W) -> Image2d<u16>
+fn local_extrema<V, W, O>(img: &Image2d<V>, nbh: &W, comp: O) -> Image2d<u16>
 where
     V: Ord,
     W: Window<Point = Point2d>,
+    O: Fn(&V, &V) -> Ordering,
 {
     // Resulting labelisation
     let mut res = img.imchvalue::<u16>();
@@ -21,9 +24,9 @@ where
                 continue;
             }
 
-            if img[p] > img[n] {
+            if comp(&img[p], &img[n]) == Ordering::Greater {
                 is_a_minimum = false;
-            } else if img[n] > img[p] {
+            } else if comp(&img[n], &img[p]) == Ordering::Greater {
                 let r = uf.find(&n);
                 res[r] = 0;
             } else {
@@ -51,4 +54,20 @@ where
     }
 
     res
+}
+
+pub fn local_minima<V, W>(img: &Image2d<V>, nbh: &W) -> Image2d<u16>
+where
+    V: Ord,
+    W: Window<Point = Point2d>,
+{
+    local_extrema(img, nbh, |v1, v2| v1.cmp(v2))
+}
+
+pub fn local_maxima<V, W>(img: &Image2d<V>, nbh: &W) -> Image2d<u16>
+where
+    V: Ord,
+    W: Window<Point = Point2d>,
+{
+    local_extrema(img, nbh, |v1, v2| v2.cmp(v1))
 }
