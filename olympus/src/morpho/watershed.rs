@@ -1,4 +1,4 @@
-use crate::{labeling::local_minima, Domain, HQueue, Image, Image2d, Point2d, Window};
+use crate::{labeling::local_minima, Domain, HistogramHQueue, Image, Image2d, Point2d, Window};
 
 pub fn watershed_partition_from_markers<W>(
     img: &Image2d<u8>,
@@ -15,7 +15,7 @@ where
     for p in *markers.domain() {
         res[p] = if markers[p] > 0 { markers[p] } else { UNSEEN };
     }
-    let mut q = HQueue::default();
+    let mut q = HistogramHQueue::new(img);
 
     // Add markers border
     for p in *res.domain() {

@@ -1,5 +1,5 @@
-//use crate::{morpho::watershed_partition, Image2d, C4};
-/*
+use crate::{morpho::watershed_partition, Image2d, C4};
+
 #[test]
 fn watershed_partition_c4() {
     let img = Image2d::<u8>::from_vec(
@@ -21,4 +21,3 @@ fn watershed_partition_c4() {
     let res = watershed_partition(&img, &C4);
     assert_eq!(res, ref_img);
 }
-*/
