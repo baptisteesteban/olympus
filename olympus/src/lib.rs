@@ -6,6 +6,7 @@ mod rgb;
 pub mod drawing;
 pub mod graph;
 pub mod io;
+pub mod labeling;
 pub mod morpho;
 
 // Private modules exports

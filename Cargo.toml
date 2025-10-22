@@ -1,5 +1,5 @@
 [workspace]
-members = ["olympus", "olympus-bin", "sandbox/tos-dt"]
+members = ["olympus", "olympus-bin", "sandbox/genericity", "sandbox/tos-dt"]
 resolver = "2"
 
 [workspace.package]
