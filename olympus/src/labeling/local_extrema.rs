@@ -1,6 +1,6 @@
 use std::cmp::Ordering;
 
-use crate::{fill, Domain, Image, Image2d, Point2d, UnionFind, Window};
+use crate::{Domain, Image, Image2d, ImageMut, Point2d, UnionFind, Window};
 
 fn local_extrema<V, W, O>(img: &Image2d<V>, nbh: &W, comp: O) -> Image2d<u16>
 where
@@ -12,8 +12,7 @@ where
     const UNSEEN: u16 = u16::MAX;
 
     // Data initialization
-    let mut res = unsafe { Image2d::<u16>::new_uninitialized(img.width(), img.height()).unwrap() };
-    fill(&mut res, UNSEEN);
+    let mut res = img.imchvalue_with_value(UNSEEN);
     let mut uf = UnionFind::new(unsafe {
         Image2d::<Point2d>::new_uninitialized(img.width(), img.height()).unwrap()
     });

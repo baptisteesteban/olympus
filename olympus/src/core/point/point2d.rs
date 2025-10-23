@@ -1,11 +1,12 @@
 use std::{
+    cmp::Ordering,
     fmt::Display,
     ops::{Add, Div, Mul, Sub},
 };
 
 /// Implementation of a 2D point for a 2D regular grid. The coordinate system
 /// used in Olympus is the `(x, y)` coordinate system.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct Point2d {
     /// The `x` coordinate
     pub x: i32,
@@ -65,5 +66,15 @@ impl Mul<i32> for Point2d {
 impl Display for Point2d {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         f.write_str(format!("({}, {})", self.x, self.y).as_str())
+    }
+}
+
+impl PartialOrd for Point2d {
+    fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
+        match self.y.partial_cmp(&other.y) {
+            Some(Ordering::Equal) => {}
+            ord => return ord,
+        };
+        self.x.partial_cmp(&other.x)
     }
 }
