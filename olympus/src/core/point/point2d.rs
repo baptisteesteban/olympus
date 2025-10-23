@@ -5,7 +5,7 @@ use std::{
 
 /// Implementation of a 2D point for a 2D regular grid. The coordinate system
 /// used in Olympus is the `(x, y)` coordinate system.
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
 pub struct Point2d {
     /// The `x` coordinate
     pub x: i32,
@@ -24,12 +24,6 @@ impl Default for Point2d {
     /// Default constructor of a `Point2d`. Returns `(0, 0)`.
     fn default() -> Self {
         Self::new(0, 0)
-    }
-}
-
-impl PartialEq for Point2d {
-    fn eq(&self, other: &Self) -> bool {
-        self.x == other.x && self.y == other.y
     }
 }
 

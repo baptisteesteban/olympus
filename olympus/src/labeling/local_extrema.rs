@@ -1,6 +1,6 @@
 use std::cmp::Ordering;
 
-use crate::{fill, Domain, Image, Image2d, ImageMut, Point2d, UnionFind, Window};
+use crate::{fill, Domain, Image, Image2d, Point2d, UnionFind, Window};
 
 fn local_extrema<V, W, O>(img: &Image2d<V>, nbh: &W, comp: O) -> Image2d<u16>
 where
@@ -8,50 +8,59 @@ where
     W: Window<Point = Point2d>,
     O: Fn(&V, &V) -> Ordering,
 {
-    // Resulting labelisation
-    let mut res = img.imchvalue::<u16>();
-    fill(&mut res, 0);
+    // Constants
+    const UNSEEN: u16 = u16::MAX;
 
-    let mut uf = UnionFind::new(img.imchvalue::<Point2d>());
+    // Data initialization
+    let mut res = unsafe { Image2d::<u16>::new_uninitialized(img.width(), img.height()).unwrap() };
+    fill(&mut res, UNSEEN);
+    let mut uf = UnionFind::new(unsafe {
+        Image2d::<Point2d>::new_uninitialized(img.width(), img.height()).unwrap()
+    });
+
     for p in *img.domain() {
         uf.make_set(&p);
-    }
+        let mut rp = p;
 
-    for p in *img.domain() {
-        let mut is_an_extrema = true;
+        let mut maybe_an_extrema = true;
         for n in nbh.apply(&p) {
-            if !img.domain().has(&n) {
+            if !img.domain().has(&n) || res[n] == UNSEEN {
                 continue;
             }
 
             match comp(&img[p], &img[n]) {
-                Ordering::Greater => is_an_extrema = false,
-                Ordering::Less => {
-                    let r = uf.find(&n);
-                    res[r] = 0;
+                Ordering::Greater => {
+                    maybe_an_extrema = false;
                 }
-                _ => {
-                    let r1 = uf.find(&p);
-                    let r2 = uf.find(&n);
-                    uf.union(&r1, &r2);
+                Ordering::Less => {
+                    let rn = uf.find(&n);
+                    res[rn] = 0;
+                }
+                Ordering::Equal => {
+                    let rn = uf.find(&n);
+                    if rp != rn {
+                        let (r_min, r_max) = if rp < rn { (rp, rn) } else { (rn, rp) };
+                        uf.union(&r_min, &r_max);
+                        maybe_an_extrema = maybe_an_extrema && (res[rn] > 0);
+                        rp = r_min;
+                    }
                 }
             }
         }
-        if is_an_extrema {
-            let r = uf.find(&p);
-            res[r] = 1;
-        }
+        (res[rp], res[p]) = if maybe_an_extrema { (1, 1) } else { (0, 0) };
+        uf.union(&rp, &p);
     }
 
-    let mut num_label = 1;
+    let mut nlabel = 0;
     for p in *img.domain() {
-        let r = uf.find(&p);
-        if res[r] > 0 {
-            if p == r {
-                res[r] = num_label;
-                num_label += 1;
+        if res[p] > 0 {
+            let r = uf.find(&p);
+            if r == p {
+                nlabel += 1;
+                res[p] = nlabel;
+            } else {
+                res[p] = res[r];
             }
-            res[p] = res[r];
         }
     }
 
