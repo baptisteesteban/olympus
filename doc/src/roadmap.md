@@ -21,6 +21,6 @@ functionalities may become priorities.
     - [X] Make it generic for any kind of `Image`
 - [X] Implementation of morphological connected operators (based on Maxtree).
     - [ ] Make it generic for any kind of `Image`
-- [ ] Implementation of the morphological watershed from Meyer
+- [X] Implementation of the morphological watershed from Meyer
   [here](https://people.cmm.minesparis.psl.eu/users/marcoteg/cv/publi_pdf/MM_refs/meyer/Meyer_watershed91.pdf).
     - [ ] Make it generic for any kind of `Image`

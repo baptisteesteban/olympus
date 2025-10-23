@@ -90,7 +90,7 @@ impl<Cont: UnionFindContainer> UnionFind<Cont> {
         }
 
         let mut a = *n;
-        while *self.zpar.at(&r) != r {
+        while *self.zpar.at(&a) != a {
             let tmp = *self.zpar.at(&a);
             *self.zpar.at_mut(&a) = r;
             a = tmp;

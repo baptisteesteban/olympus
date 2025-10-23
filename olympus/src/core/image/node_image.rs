@@ -1,6 +1,8 @@
 use std::ops::{Index, IndexMut};
 
-use crate::{core::image::details::NDBuffer, Domain, Image, ImageMut, NodeDomain, SizedDomain};
+use crate::{
+    core::image::details::NDBuffer, fill, Domain, Image, ImageMut, NodeDomain, SizedDomain,
+};
 
 #[derive(Debug)]
 pub struct NodeImage<T> {
@@ -82,8 +84,18 @@ impl<T> ImageMut for NodeImage<T> {
         }
     }
 
-    fn imchvalue<V>(&self) -> Self::ChangeValue<V> {
-        unsafe { NodeImage::<V>::new_uninitialized(self.domain.clone()) }
+    unsafe fn imchvalue_uninitialized<V>(&self) -> Self::ChangeValue<V> {
+        NodeImage::<V>::new_uninitialized(self.domain.clone())
+    }
+
+    fn imchvalue_with_value<V: Copy>(&self, v: V) -> Self::ChangeValue<V> {
+        let mut res = unsafe { self.imchvalue_uninitialized::<V>() };
+        fill(&mut res, v);
+        res
+    }
+
+    fn imchvalue<V: Default + Copy>(&self) -> Self::ChangeValue<V> {
+        self.imchvalue_with_value(V::default())
     }
 
     fn duplicate(&self) -> Self {

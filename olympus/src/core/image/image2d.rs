@@ -41,8 +41,18 @@ impl<T> ImageMut for Image2d<T> {
         self.get_mut(p.x, p.y)
     }
 
-    fn imchvalue<V>(&self) -> Self::ChangeValue<V> {
-        unsafe { Image2d::<V>::new_uninitialized(self.width(), self.height()).unwrap() }
+    unsafe fn imchvalue_uninitialized<V>(&self) -> Self::ChangeValue<V> {
+        Image2d::<V>::new_uninitialized(self.width(), self.height()).unwrap()
+    }
+
+    fn imchvalue_with_value<V: Copy>(&self, v: V) -> Self::ChangeValue<V> {
+        let mut res = unsafe { self.imchvalue_uninitialized() };
+        fill(&mut res, v);
+        res
+    }
+
+    fn imchvalue<V: Default + Copy>(&self) -> Self::ChangeValue<V> {
+        self.imchvalue_with_value(V::default())
     }
 
     fn duplicate(&self) -> Self {

@@ -25,7 +25,13 @@ pub trait ImageMut:
     fn at_mut(&mut self, p: &<Self::Domain as Domain>::Point) -> Option<&mut Self::Value>;
 
     /// Change the value type of an image and returns the resulting image
-    fn imchvalue<V>(&self) -> Self::ChangeValue<V>;
+    ///
+    /// # Safety
+    ///
+    /// The returned image has uninitialized values and thus it is unsafe to use it.
+    unsafe fn imchvalue_uninitialized<V>(&self) -> Self::ChangeValue<V>;
+    fn imchvalue_with_value<V: Copy>(&self, v: V) -> Self::ChangeValue<V>;
+    fn imchvalue<V: Default + Copy>(&self) -> Self::ChangeValue<V>;
 
     /// Build a new image with the same domain as the image but with uninitialzed values.
     fn duplicate(&self) -> Self;
