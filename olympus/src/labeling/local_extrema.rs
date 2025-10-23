@@ -28,10 +28,10 @@ where
             }
 
             match comp(&img[p], &img[n]) {
-                Ordering::Greater => {
+                Ordering::Less => {
                     maybe_an_extrema = false;
                 }
-                Ordering::Less => {
+                Ordering::Greater => {
                     let rn = uf.find(&n);
                     res[rn] = 0;
                 }
