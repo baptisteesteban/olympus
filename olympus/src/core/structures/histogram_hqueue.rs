@@ -1,6 +1,6 @@
 use std::cmp::min;
 
-use crate::{Image, Image2d, NDBuffer, Point2d, SizedDomain};
+use crate::{Domain, Image, NDBuffer, SizedDomain};
 
 #[derive(Default)]
 struct Meta {
@@ -21,18 +21,22 @@ impl Meta {
     }
 }
 
-pub struct HistogramHQueue {
-    data: NDBuffer<Point2d>,
+pub struct HistogramHQueue<I: Image> {
+    data: NDBuffer<<I::Domain as Domain>::Point>,
     meta: [Meta; 256],
     size: usize,
     cur: usize,
 }
 
-impl HistogramHQueue {
-    pub fn new(img: &Image2d<u8>) -> HistogramHQueue {
+impl<I: Image<Value = u8>> HistogramHQueue<I>
+where
+    I: Image<Value = u8>,
+    I::Domain: SizedDomain,
+{
+    pub fn new(img: &I) -> HistogramHQueue<I> {
         // Compute histogram
         let mut h: [usize; 256] = std::array::from_fn(|_| 0);
-        for p in *img.domain() {
+        for p in img.domain().clone() {
             h[img[p] as usize] += 1;
         }
 
@@ -60,7 +64,7 @@ impl HistogramHQueue {
         self.size == 0
     }
 
-    pub fn push(&mut self, p: Point2d, v: u8) {
+    pub fn push(&mut self, p: <I::Domain as Domain>::Point, v: u8) {
         let vi = v as usize;
         debug_assert_ne!(self.meta[vi].size(), self.meta[vi].capacity);
         self.data[self.meta[vi].end] = p;
@@ -69,7 +73,7 @@ impl HistogramHQueue {
         self.size += 1;
     }
 
-    pub fn pop(&mut self) -> (Point2d, u8) {
+    pub fn pop(&mut self) -> (<I::Domain as Domain>::Point, u8) {
         debug_assert!(!self.is_empty());
         self.update_cur();
         let res_p = self.data[self.meta[self.cur].start];

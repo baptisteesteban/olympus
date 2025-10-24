@@ -5,7 +5,6 @@ where
     I: ImageMut,
     I::Value: Eq + Copy,
     I::Domain: SizedDomain,
-    <I::Domain as Domain>::Point: Copy + Eq + PartialOrd,
     W: Window<Point = <I::Domain as Domain>::Point>,
 {
     // Constants

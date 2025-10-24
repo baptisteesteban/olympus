@@ -37,7 +37,6 @@ impl<I> UnionFindContainer for I
 where
     I: ImageMut,
     I::Domain: Domain,
-    <I::Domain as Domain>::Point: Copy + PartialEq,
     I::Value:
         Copy + PartialEq + From<<I::Domain as Domain>::Point> + Into<<I::Domain as Domain>::Point>,
 {

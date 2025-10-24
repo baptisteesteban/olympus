@@ -7,7 +7,6 @@ where
     I: ImageMut,
     I::Value: Ord,
     I::Domain: SizedDomain,
-    <I::Domain as Domain>::Point: Eq + Ord + Copy,
     W: Window<Point = <I::Domain as Domain>::Point>,
     O: Fn(&I::Value, &I::Value) -> Ordering,
 {
