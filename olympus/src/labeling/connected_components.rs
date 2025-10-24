@@ -10,7 +10,7 @@ where
 
     // Data structures
     let mut res = img.imchvalue_with_value::<u16>(UNSEEN);
-    let mut uf = UnionFind::new(unsafe { img.imchvalue_uninitialized() });
+    let mut uf = UnionFind::new(unsafe { img.imchvalue_uninitialized::<Point2d>() });
 
     // Connected components
     for p in *img.domain() {
