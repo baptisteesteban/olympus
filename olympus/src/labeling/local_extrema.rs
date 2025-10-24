@@ -1,23 +1,25 @@
 use std::cmp::Ordering;
 
-use crate::{Domain, Image, Image2d, ImageMut, Point2d, UnionFind, Window};
+use crate::{Domain, ImageMut, SizedDomain, UnionFind, Window};
 
-fn local_extrema<V, W, O>(img: &Image2d<V>, nbh: &W, comp: O) -> Image2d<u16>
+fn local_extrema<I, W, O>(img: &I, nbh: &W, comp: O) -> I::ChangeValue<u16>
 where
-    V: Ord,
-    W: Window<Point = Point2d>,
-    O: Fn(&V, &V) -> Ordering,
+    I: ImageMut,
+    I::Value: Ord,
+    I::Domain: SizedDomain,
+    <I::Domain as Domain>::Point: Eq + Ord + Copy,
+    W: Window<Point = <I::Domain as Domain>::Point>,
+    O: Fn(&I::Value, &I::Value) -> Ordering,
 {
     // Constants
     const UNSEEN: u16 = u16::MAX;
 
     // Data initialization
     let mut res = img.imchvalue_with_value(UNSEEN);
-    let mut uf = UnionFind::new(unsafe {
-        Image2d::<Point2d>::new_uninitialized(img.width(), img.height()).unwrap()
-    });
+    let mut uf =
+        UnionFind::new(unsafe { res.imchvalue_uninitialized::<<I::Domain as Domain>::Point>() });
 
-    for p in *img.domain() {
+    for p in img.domain().clone() {
         uf.make_set(&p);
         let mut rp = p;
 
@@ -51,7 +53,7 @@ where
     }
 
     let mut nlabel = 0;
-    for p in *img.domain() {
+    for p in img.domain().clone() {
         if res[p] > 0 {
             let r = uf.find(&p);
             if r == p {
@@ -66,18 +68,24 @@ where
     res
 }
 
-pub fn local_minima<V, W>(img: &Image2d<V>, nbh: &W) -> Image2d<u16>
+pub fn local_minima<I, W>(img: &I, nbh: &W) -> I::ChangeValue<u16>
 where
-    V: Ord,
-    W: Window<Point = Point2d>,
+    I: ImageMut,
+    I::Value: Ord,
+    I::Domain: SizedDomain,
+    <I::Domain as Domain>::Point: Eq + Ord + Copy,
+    W: Window<Point = <I::Domain as Domain>::Point>,
 {
     local_extrema(img, nbh, |v1, v2| v1.cmp(v2))
 }
 
-pub fn local_maxima<V, W>(img: &Image2d<V>, nbh: &W) -> Image2d<u16>
+pub fn local_maxima<I, W>(img: &I, nbh: &W) -> I::ChangeValue<u16>
 where
-    V: Ord,
-    W: Window<Point = Point2d>,
+    I: ImageMut,
+    I::Value: Ord,
+    I::Domain: SizedDomain,
+    <I::Domain as Domain>::Point: Eq + Ord + Copy,
+    W: Window<Point = <I::Domain as Domain>::Point>,
 {
     local_extrema(img, nbh, |v1, v2| v2.cmp(v1))
 }
