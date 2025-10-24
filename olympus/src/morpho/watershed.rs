@@ -1,6 +1,5 @@
 use crate::{
-    labeling::local_minima, Domain, HistogramHQueue, Image, Image2d, ImageMut, Point2d,
-    SizedDomain, Window,
+    labeling::local_minima, Domain, HistogramHQueue, Image, ImageMut, SizedDomain, Window,
 };
 
 pub fn watershed_partition_from_markers<I, W>(
@@ -48,9 +47,11 @@ where
     res
 }
 
-pub fn watershed_partition<W>(img: &Image2d<u8>, nbh: &W) -> Image2d<u16>
+pub fn watershed_partition<I, W>(img: &I, nbh: &W) -> I::ChangeValue<u16>
 where
-    W: Window<Point = Point2d>,
+    I: ImageMut<Value = u8>,
+    I::Domain: SizedDomain,
+    W: Window<Point = <I::Domain as Domain>::Point>,
 {
     let markers = local_minima(img, nbh);
     watershed_partition_from_markers(img, &markers, nbh)

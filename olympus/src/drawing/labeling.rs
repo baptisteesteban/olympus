@@ -1,4 +1,4 @@
-use crate::{Image, Image2d, Rgb8, BLACK};
+use crate::{ImageMut, Rgb8, SizedDomain, BLACK};
 
 // From scikit-image `label2rgb`
 const COLORS: [Rgb8; 10] = [
@@ -14,10 +14,13 @@ const COLORS: [Rgb8; 10] = [
     Rgb8::new(154, 205, 49),
 ];
 
-pub fn label2rgb(labels: &Image2d<u16>) -> Image2d<Rgb8> {
-    let mut res =
-        unsafe { Image2d::<Rgb8>::new_uninitialized(labels.width(), labels.height()).unwrap() };
-    for p in *labels.domain() {
+pub fn label2rgb<I>(labels: &I) -> I::ChangeValue<Rgb8>
+where
+    I: ImageMut<Value = u16>,
+    I::Domain: SizedDomain,
+{
+    let mut res = unsafe { labels.imchvalue_uninitialized() };
+    for p in labels.domain().clone() {
         res[p] = if labels[p] == 0 {
             BLACK
         } else {
