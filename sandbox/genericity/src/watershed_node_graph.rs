@@ -1,73 +1,94 @@
 use olympus::{
-    drawing::label2rgb, graph::AdjacencyList, morpho::watershed_partition,
+    drawing::label2rgb,
+    graph::AdjacencyList,
+    labeling::local_minima,
+    morpho::{gradient, watershed_partition},
     GraphBuildFromNumberOfNodes, Image, MutableEdgeGraph, NodeDomain, NodeImage, NodeToNode,
     Point2d, Rgb8, SizedDomain, Window,
 };
 
 trait NodeImageDot {
-    fn print_dot(&self, pos: Option<&[Point2d]>);
+    fn dot_string(&self, pos: Option<&[Point2d]>) -> String;
 }
 
 impl NodeImageDot for NodeImage<u8> {
-    fn print_dot(&self, pos: Option<&[Point2d]>) {
+    fn dot_string(&self, pos: Option<&[Point2d]>) -> String {
         let nbh = NodeToNode::new(self.domain());
         let mut visited = vec![false; self.domain().size()];
 
-        println!("graph G {{");
+        let mut res = String::new();
+        res.push_str("graph G {{");
         for p in self.domain().clone() {
             let pos = if let Some(pn) = pos {
                 format!(" pos=\"{}.0, {}.0\"", pn[p as usize].x, pn[p as usize].y)
             } else {
                 String::new()
             };
-            println!(
-                "\t{} [label=\"\" fillcolor=\"#{}\", shape=\"circle\" style=\"filled\"{}]",
-                p,
-                Rgb8::new(self[p], self[p], self[p]).hex(),
-                pos
+            res.push_str(
+                format!(
+                    "\t{} [label=\"\" fillcolor=\"#{}\", shape=\"circle\" style=\"filled\"{}]\n",
+                    p,
+                    Rgb8::new(self[p], self[p], self[p]).hex(),
+                    pos
+                )
+                .as_str(),
             );
             for n in nbh.apply(&p) {
                 if !visited[n as usize] {
-                    println!("\t{} -- {}", p, n);
+                    res.push_str(format!("\t{} -- {}\n", p, n).as_str());
                 }
             }
             visited[p as usize] = true;
         }
-        println!("}}");
+        res.push_str("}}");
+        res
     }
 }
 
 impl NodeImageDot for NodeImage<Rgb8> {
-    fn print_dot(&self, pos: Option<&[Point2d]>) {
+    fn dot_string(&self, pos: Option<&[Point2d]>) -> String {
+        let mut res = String::new();
         let nbh = NodeToNode::new(self.domain());
         let mut visited = vec![false; self.domain().size()];
 
-        println!("graph G {{");
+        res.push_str("graph G {{");
         for p in self.domain().clone() {
             let pos = if let Some(pn) = pos {
                 format!(" pos=\"{}.0, {}.0\"", pn[p as usize].x, pn[p as usize].y)
             } else {
                 String::new()
             };
-            println!(
-                "\t{} [label=\"\" fillcolor=\"#{}\", shape=\"circle\" style=\"filled\"{}]",
-                p,
-                self[p].hex(),
-                pos
+            res.push_str(
+                format!(
+                    "\t{} [label=\"\" fillcolor=\"#{}\", shape=\"circle\" style=\"filled\"{}]\n",
+                    p,
+                    self[p].hex(),
+                    pos
+                )
+                .as_str(),
             );
             for n in nbh.apply(&p) {
                 if !visited[n as usize] {
-                    println!("\t{} -- {}", p, n);
+                    res.push_str(format!("\t{} -- {}\n", p, n).as_str());
                 }
             }
             visited[p as usize] = true;
         }
-        println!("}}");
+        res.push_str("}}");
+        res
     }
 }
 
+#[allow(dead_code)]
 fn print_dot<I: NodeImageDot>(img: &I, pos: Option<&[Point2d]>) {
-    img.print_dot(pos)
+    println!("{}", img.dot_string(pos));
+}
+
+#[allow(dead_code)]
+fn save_dot<I: NodeImageDot>(img: &I, out: &str, pos: Option<&[Point2d]>) {
+    if let Err(e) = std::fs::write(out, img.dot_string(pos)) {
+        eprintln!("Failed to write DOT file '{}': {}", out, e);
+    }
 }
 
 fn main() {
@@ -144,7 +165,12 @@ fn main() {
     let domain = NodeDomain::new(g);
 
     let img = NodeImage::<u8>::new(domain, colors).unwrap();
-    //print_dot(&img, Some(&pos));
-    let ws = watershed_partition(&img, &NodeToNode::new(img.domain()));
-    print_dot(&label2rgb(&ws), Some(&pos));
+    let nbh = NodeToNode::new(img.domain());
+    save_dot(&img, "graph.dot", Some(&pos));
+    let grad = gradient(&img, &nbh);
+    save_dot(&grad, "grad.dot", Some(&pos));
+    let minima = local_minima(&grad, &nbh);
+    save_dot(&label2rgb(&minima), "local_minima.dot", Some(&pos));
+    let ws = watershed_partition(&grad, &nbh);
+    save_dot(&label2rgb(&ws), "ws.dot", Some(&pos));
 }
