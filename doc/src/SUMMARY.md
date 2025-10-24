@@ -2,4 +2,5 @@
 
 - [Introduction](./introduction.md)
 - [Roadmap](./roadmap.md)
-- [Genericity](./watershed.md)
+- [Sandbox](./sandbox.md)
+    - [Genericity](./chapters/sandbox/genericity.md)
