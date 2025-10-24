@@ -4,3 +4,4 @@
 .vscode
 *.svg
 public
+*.dot

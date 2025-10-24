@@ -71,10 +71,16 @@ impl Display for Point2d {
 
 impl PartialOrd for Point2d {
     fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
-        match self.y.partial_cmp(&other.y) {
-            Some(Ordering::Equal) => {}
+        Some(self.cmp(other))
+    }
+}
+
+impl Ord for Point2d {
+    fn cmp(&self, other: &Self) -> Ordering {
+        match self.y.cmp(&other.y) {
+            Ordering::Equal => {}
             ord => return ord,
         };
-        self.x.partial_cmp(&other.x)
+        self.x.cmp(&other.x)
     }
 }

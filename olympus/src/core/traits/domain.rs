@@ -1,6 +1,6 @@
 pub trait Domain {
     /// The associated point that compose the domain set.
-    type Point;
+    type Point: Eq + Ord + Copy;
 
     /// Check if a point `p` belongs to the domain.
     fn has(&self, p: &Self::Point) -> bool;

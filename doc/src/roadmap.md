@@ -23,4 +23,4 @@ functionalities may become priorities.
     - [ ] Make it generic for any kind of `Image`
 - [X] Implementation of the morphological watershed from Meyer
   [here](https://people.cmm.minesparis.psl.eu/users/marcoteg/cv/publi_pdf/MM_refs/meyer/Meyer_watershed91.pdf).
-    - [ ] Make it generic for any kind of `Image`
+    - [X] Make it generic for any kind of `Image`

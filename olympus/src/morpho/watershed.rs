@@ -1,24 +1,28 @@
-use crate::{labeling::local_minima, Domain, HistogramHQueue, Image, Image2d, Point2d, Window};
+use crate::{
+    labeling::local_minima, Domain, HistogramHQueue, Image, ImageMut, SizedDomain, Window,
+};
 
-pub fn watershed_partition_from_markers<W>(
-    img: &Image2d<u8>,
-    markers: &Image2d<u16>,
+pub fn watershed_partition_from_markers<I, W>(
+    img: &I,
+    markers: &I::ChangeValue<u16>,
     nbh: &W,
-) -> Image2d<u16>
+) -> I::ChangeValue<u16>
 where
-    W: Window<Point = Point2d>,
+    I: ImageMut<Value = u8>,
+    I::Domain: SizedDomain,
+    W: Window<Point = <I::Domain as Domain>::Point>,
 {
     const UNSEEN: u16 = u16::MAX;
 
     // Initialization
-    let mut res = unsafe { Image2d::<u16>::new_uninitialized(img.width(), img.height()).unwrap() };
-    for p in *markers.domain() {
+    let mut res = unsafe { img.imchvalue_uninitialized() };
+    for p in markers.domain().clone() {
         res[p] = if markers[p] > 0 { markers[p] } else { UNSEEN };
     }
     let mut q = HistogramHQueue::new(img);
 
     // Add markers border
-    for p in *res.domain() {
+    for p in res.domain().clone() {
         if res[p] != UNSEEN {
             for n in nbh.apply(&p) {
                 if res.domain().has(&n) && res[n] == UNSEEN {
@@ -43,9 +47,11 @@ where
     res
 }
 
-pub fn watershed_partition<W>(img: &Image2d<u8>, nbh: &W) -> Image2d<u16>
+pub fn watershed_partition<I, W>(img: &I, nbh: &W) -> I::ChangeValue<u16>
 where
-    W: Window<Point = Point2d>,
+    I: ImageMut<Value = u8>,
+    I::Domain: SizedDomain,
+    W: Window<Point = <I::Domain as Domain>::Point>,
 {
     let markers = local_minima(img, nbh);
     watershed_partition_from_markers(img, &markers, nbh)

@@ -1,4 +1,4 @@
-use std::ops::{Index, IndexMut};
+use std::ops::{Add, Index, IndexMut, Sub};
 
 use crate::{
     core::image::details::NDBuffer, fill, Domain, Image, ImageMut, NodeDomain, SizedDomain,
@@ -114,5 +114,35 @@ impl<T: PartialEq> PartialEq for NodeImage<T> {
             }
         }
         true
+    }
+}
+
+impl<V> Add for NodeImage<V>
+where
+    V: Add<V, Output = V> + Copy,
+{
+    type Output = NodeImage<V>;
+
+    fn add(self, rhs: Self) -> Self::Output {
+        let mut res = self.duplicate();
+        for p in self.domain().clone() {
+            res[p] = self[p] + rhs[p];
+        }
+        res
+    }
+}
+
+impl<V> Sub for NodeImage<V>
+where
+    V: Sub<V, Output = V> + Copy,
+{
+    type Output = NodeImage<V>;
+
+    fn sub(self, rhs: Self) -> Self::Output {
+        let mut res = self.duplicate();
+        for p in self.domain().clone() {
+            res[p] = self[p] - rhs[p];
+        }
+        res
     }
 }
