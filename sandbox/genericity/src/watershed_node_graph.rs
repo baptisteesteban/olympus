@@ -1,7 +1,6 @@
 use olympus::{
     drawing::label2rgb,
     graph::AdjacencyList,
-    labeling::local_minima,
     morpho::{gradient, watershed_partition},
     GraphBuildFromNumberOfNodes, Image, MutableEdgeGraph, NodeDomain, NodeImage, NodeToNode,
     Point2d, Rgb8, SizedDomain, Window,
@@ -166,11 +165,9 @@ fn main() {
 
     let img = NodeImage::<u8>::new(domain, colors).unwrap();
     let nbh = NodeToNode::new(img.domain());
-    save_dot(&img, "graph.dot", Some(&pos));
+    save_dot(&img, "node_graph.dot", Some(&pos));
     let grad = gradient(&img, &nbh);
-    save_dot(&grad, "grad.dot", Some(&pos));
-    let minima = local_minima(&grad, &nbh);
-    save_dot(&label2rgb(&minima), "local_minima.dot", Some(&pos));
+    save_dot(&grad, "node_graph_grad.dot", Some(&pos));
     let ws = watershed_partition(&grad, &nbh);
-    save_dot(&label2rgb(&ws), "ws.dot", Some(&pos));
+    save_dot(&label2rgb(&ws), "node_graph_watershed.dot", Some(&pos));
 }
