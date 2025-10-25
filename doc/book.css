@@ -1,0 +1,23 @@
+.img-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+}
+
+.img-row img {
+    width: 30%;
+    min-width: 200px;
+    height: auto;
+}
+
+@media (max-width: 768px) {
+    .img-row img {
+        width: 90%;
+    }
+}
+
+p {
+    text-align: justify;
+    text-justify: inter-word;
+}

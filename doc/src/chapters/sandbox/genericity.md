@@ -6,24 +6,19 @@ These are attempts to reproduce some results described
 More details may be found in [this
 thesis](https://theses.hal.science/pastel-00673121v1).
 
-<div style="text-align: center;">
 
-<table style="border-collapse: collapse; margin: 0 auto;">
-<tr>
-    <th style="text-align: center; padding: 10px; font=bold;">Input Image</th>
-    <th style="text-align: center; padding: 10px; font=bold;">Gradient</th>
-    <th style="text-align: center; padding: 10px; font=bold;">Watershed</th>
-</tr>
-<tr>
-    <td style="text-align: center; padding: 5px;"><img src="../../imgs/lena_gray.png" width="200"/></td>
-    <td style="text-align: center; padding: 5px;"><img src="../../generated/lena_gradient.png" width="200"/></td>
-    <td style="text-align: center; padding: 5px;"><img src="../../generated/lena_watershed.png" width="200"/></td>
-</tr>
-<tr>
-    <td style="text-align: center; padding: 5px;"><img src="../../generated/node_graph.svg" width="200"/></td>
-    <td style="text-align: center; padding: 5px;"><img src="../../generated/node_graph_grad.svg" width="200"/></td>
-    <td style="text-align: center; padding: 5px;"><img src="../../generated/node_graph_watershed.svg" width="200"/></td>
-</tr>
-</table>
+The images below are the result of our process. The first image is the input
+image, the second one is the gradient on which the watershed algorithm is
+applied and whose result is the third image.
 
+<div class="img-row">
+  <img src="../../imgs/lena_gray.png" alt="Input" />
+  <img src="../../generated/lena_gradient.png" alt="Gradient" />
+  <img src="../../generated/lena_watershed.png" alt="Watershed" />
+</div>
+<br>
+<div class="img-row">
+  <img src="../../generated/node_graph.svg" alt="Input" />
+  <img src="../../generated/node_graph_grad.svg" alt="Gradient" />
+  <img src="../../generated/node_graph_watershed.svg" alt="Watershed" />
 </div>
