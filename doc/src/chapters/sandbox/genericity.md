@@ -6,11 +6,7 @@ These are attempts to reproduce some results described
 More details may be found in [this
 thesis](https://theses.hal.science/pastel-00673121v1).
 
-| Input Image | Watershed |
-:------------:|:----------:
-![img](../../imgs/lena_gray.png) | ![ws](../../generated/lena_watershed.png)
-
-
-![graph](../../generated/node_graph.svg)
-![grad](../../generated/node_graph_grad.svg)
-![ws2](../../generated/node_graph_watershed.svg)
+| Input Image | Gradient | Watershed |
+|:-----------:|:--------:|:---------:|
+![](../../imgs/lena_gray.png) | ![](../../generated/lena_gradient.png) | ![](../../generated/lena_watershed.png)
+![](../../generated/node_graph.svg) | ![](../../generated/node_graph_grad.svg) | ![](../../generated/node_graph_watershed.svg)

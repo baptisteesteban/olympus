@@ -5,7 +5,8 @@ documentation: build-doc
 build-doc: build-folder build-book cargo-doc
 
 build-folder:
-	mkdir -p public/generated
+	[ -d "public" ] && rm -rf "public" || true
+	mkdir -p public/generated;
 	cp -r doc/imgs public/
 
 install-mdbook:
