@@ -6,7 +6,24 @@ These are attempts to reproduce some results described
 More details may be found in [this
 thesis](https://theses.hal.science/pastel-00673121v1).
 
-| Input Image | Gradient | Watershed |
-|:-----------:|:--------:|:---------:|
-![](../../imgs/lena_gray.png) | ![](../../generated/lena_gradient.png) | ![](../../generated/lena_watershed.png)
-![](../../generated/node_graph.svg) | ![](../../generated/node_graph_grad.svg) | ![](../../generated/node_graph_watershed.svg)
+<div style="text-align: center;">
+
+<table style="border-collapse: collapse; margin: 0 auto;">
+<tr>
+    <th style="text-align: center; padding: 10px; font=bold;">Input Image</th>
+    <th style="text-align: center; padding: 10px; font=bold;">Gradient</th>
+    <th style="text-align: center; padding: 10px; font=bold;">Watershed</th>
+</tr>
+<tr>
+    <td style="text-align: center; padding: 5px;"><img src="../../imgs/lena_gray.png" width="200"/></td>
+    <td style="text-align: center; padding: 5px;"><img src="../../generated/lena_gradient.png" width="200"/></td>
+    <td style="text-align: center; padding: 5px;"><img src="../../generated/lena_watershed.png" width="200"/></td>
+</tr>
+<tr>
+    <td style="text-align: center; padding: 5px;"><img src="../../generated/node_graph.svg" width="200"/></td>
+    <td style="text-align: center; padding: 5px;"><img src="../../generated/node_graph_grad.svg" width="200"/></td>
+    <td style="text-align: center; padding: 5px;"><img src="../../generated/node_graph_watershed.svg" width="200"/></td>
+</tr>
+</table>
+
+</div>
