@@ -11,6 +11,7 @@ struct Args {
     input_filename: String,
     lambda: usize,
     output_filename: String,
+    gradient_filename: Option<String>,
 }
 
 fn main() {
@@ -26,4 +27,7 @@ fn main() {
     let ws = watershed_partition(&grad_f, &C4);
     let out = label2rgb(&ws);
     imsave(args.output_filename.as_str(), &out).unwrap();
+    if let Some(gradient_filename) = args.gradient_filename {
+        imsave(&gradient_filename, &grad).unwrap();
+    }
 }

@@ -9,3 +9,6 @@ edition = "2021"
 
 [build]
 build-dir = "olympus-book"
+
+[output.html]
+additional-css = ["book.css"]

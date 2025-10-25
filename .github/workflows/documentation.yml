@@ -24,16 +24,14 @@ jobs:
         with:
           toolchain: stable
 
-      - name: Install mdbook
-        run: cargo install mdbook
+      - name: Install Just
+        run: cargo install just
 
-      - name: Build Olympus mdbook
-        run: |
-          mkdir public
-          mdbook build doc
-          mv doc/olympus-book/* public
-          cargo doc -p olympus --no-deps
-          mv target/doc/ public/api
+      - name: Install graphviz
+        uses: tlylt/install-graphviz@v1
+
+      - name: Build Olympus documentation
+        run: just documentation
 
       - name: Documentation artefact
         id: deployment
