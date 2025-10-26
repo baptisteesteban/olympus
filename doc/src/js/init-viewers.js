@@ -14,7 +14,11 @@ document.querySelectorAll('.off-viewer').forEach((div, index) => {
     if (!div.id) {
         div.id = `off-viewer-${index}`;
     }
+    let displayEdges = false;
+    if (div.hasAttribute('display-edges')) {
+        displayEdges = true;
+    }
     console.log(`Initializing viewer for div ${div.id} with src ${src}`);
-    const viewer = new OffViewer(div.id, src);
+    const viewer = new OffViewer(div.id, src, displayEdges);
     viewers.push(viewer);
 });

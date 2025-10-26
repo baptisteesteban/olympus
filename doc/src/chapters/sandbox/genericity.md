@@ -26,11 +26,20 @@ applied and whose result is the third image.
 <script type="importmap">
   {
       "imports": {
-          "three": "https://unpkg.com/three@0.153.0/build/three.module.js",
-          "three/examples/jsm/controls/OrbitControls.js": "https://unpkg.com/three@0.153.0/examples/jsm/controls/OrbitControls.js"
+          "three": "https://unpkg.com/three@0.180.0/build/three.module.js",
+          "three/examples/jsm/controls/OrbitControls.js": "https://unpkg.com/three@0.180.0/examples/jsm/controls/OrbitControls.js"
       }
   }
 </script>
 
-<div data-src="../../imgs/spot.off" class="off-viewer"></div>
+<br>
+<div style="
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+">
+  <div data-src="../../imgs/spot.off" class="off-viewer" display-edges style="width: 300px; height: 300px"></div>
+</div>
+
 <script type="module" src="../../js/init-viewers.js"></script>

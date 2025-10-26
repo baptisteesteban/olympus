@@ -2,13 +2,14 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 
 export class OffViewer {
-    constructor(containerId, offFileUrl) {
+    constructor(containerId, offFileUrl, displayEdges = true) {
         this.container = document.getElementById(containerId);
         if (!this.container) {
             console.error(`No element found with ID: ${containerId}`);
             return;
         }
         this.offFileUrl = offFileUrl;
+        this.displayEdges = displayEdges
         this.scene = null;
         this.camera = null;
         this.renderer = null;
@@ -18,7 +19,7 @@ export class OffViewer {
 
     init() {
         this.scene = new THREE.Scene();
-        this.scene.background = new THREE.Color(0xcccccc);
+        this.scene.background = new THREE.Color(0xffffff);
 
         this.camera = new THREE.PerspectiveCamera(
             75,
@@ -36,7 +37,7 @@ export class OffViewer {
         this.controls.enableDamping = true;
         this.controls.dampingFactor = 0.05;
 
-        const ambientLight = new THREE.AmbientLight(0x404040, 0.5);
+        const ambientLight = new THREE.AmbientLight(0xbbbbbb, 1);
         this.scene.add(ambientLight);
         const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
         directionalLight.position.set(1, 1, 1).normalize();
@@ -83,6 +84,7 @@ export class OffViewer {
         const geometry = new THREE.BufferGeometry();
         const positions = [];
         const normals = [];
+        const edgePositions = [];
         for (let i = 2 + vertexCount; i < 2 + vertexCount + faceCount; i++) {
             const indices = lines[i].split(/\s+/).map(Number);
             const vertexCountInFace = indices[0];
@@ -104,6 +106,14 @@ export class OffViewer {
             for (let j = 0; j < 3; j++) {
                 normals.push(normal.x, normal.y, normal.z);
             }
+            edgePositions.push(
+                v0.x, v0.y, v0.z, // Start of edge 1
+                v1.x, v1.y, v1.z, // End of edge 1
+                v1.x, v1.y, v1.z, // Start of edge 2
+                v2.x, v2.y, v2.z, // End of edge 2
+                v2.x, v2.y, v2.z, // Start of edge 3
+                v0.x, v0.y, v0.z  // End of edge 3
+            );
         }
 
         geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
@@ -117,17 +127,30 @@ export class OffViewer {
         const mesh = new THREE.Mesh(geometry, material);
         this.scene.add(mesh);
 
+        const edgesGeometry = new THREE.BufferGeometry();
+        edgesGeometry.setAttribute('position', new THREE.Float32BufferAttribute(edgePositions, 3));
+        const edgesMaterial = new THREE.LineBasicMaterial({ color: 0x000000 });
+        const edges = new THREE.LineSegments(edgesGeometry, edgesMaterial);
+
+        const group = new THREE.Group();
+        group.add(mesh);
+        if (this.displayEdges) {
+            group.add(edges);
+        }
+        this.scene.add(group);
+
         geometry.computeBoundingBox();
         const box = geometry.boundingBox;
         const center = box.getCenter(new THREE.Vector3());
         const size = box.getSize(new THREE.Vector3());
         const maxDim = Math.max(size.x, size.y, size.z);
         const scale = 4 / maxDim;
-        mesh.position.sub(center.multiplyScalar(scale));
-        mesh.scale.set(scale, scale, scale);
+
+        group.position.sub(center.multiplyScalar(scale));
+        group.scale.set(scale, scale, scale);
 
         this.camera.position.set(0, 0, maxDim * 1.5);
-        this.controls.target.copy(mesh.position);
+        this.controls.target.copy(group.position);
         this.controls.update();
     }
 
@@ -138,8 +161,25 @@ export class OffViewer {
     }
 
     dispose() {
-        window.removeEventListener('resize', this.onWindowResize);
+        window.removeEventListener('resize', () => this.onWindowResize());
+
+        this.scene.traverse(object => {
+            if (object.isMesh || object.isLineSegments) {
+                object.geometry.dispose();
+                if (Array.isArray(object.material)) {
+                    object.material.forEach(mat => mat.dispose());
+                } else {
+                    object.material.dispose();
+                }
+            }
+        });
+
         this.renderer.dispose();
+        this.renderer.forceContextLoss();
         this.container.removeChild(this.renderer.domElement);
+        this.scene = null;
+        this.camera = null;
+        this.renderer = null;
+        this.controls = null;
     }
 }

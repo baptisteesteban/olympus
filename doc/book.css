@@ -21,9 +21,3 @@ p {
     text-align: justify;
     text-justify: inter-word;
 }
-
-.off-viewer {
-    width: 400px;
-    height: 400px;
-    border: 1 solid black;
-}
