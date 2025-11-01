@@ -6,6 +6,7 @@ version.workspace = true
 
 [dependencies]
 clap = { version = "4.5.50", features = ["derive"] }
+nom = "8.0.0"
 olympus = { path = "../../olympus" }
 
 [[bin]]
@@ -15,3 +16,7 @@ path = "src/watershed_image2d.rs"
 [[bin]]
 name = "watershed_node_graph"
 path = "src/watershed_node_graph.rs"
+
+[[bin]]
+name = "off_parser"
+path = "src/off_parser.rs"
