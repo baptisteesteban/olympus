@@ -36,19 +36,33 @@ impl Mesh {
         }
     }
 
+    #[inline]
     pub fn add_vertex(&mut self, p: Point3d) {
         self.pos.push(p);
     }
 
+    #[inline]
     pub fn add_triangle(&mut self, t: Triangle) {
         self.triangles.push(t);
     }
 
+    #[inline]
     pub fn vertices(&self) -> impl Iterator<Item = &Point3d> {
         self.pos.iter()
     }
 
+    #[inline]
     pub fn triangles(&self) -> impl Iterator<Item = &Triangle> {
         self.triangles.iter()
+    }
+
+    #[inline]
+    pub fn num_vertices(&self) -> usize {
+        self.pos.len()
+    }
+
+    #[inline]
+    pub fn num_triangles(&self) -> usize {
+        self.triangles.len()
     }
 }
