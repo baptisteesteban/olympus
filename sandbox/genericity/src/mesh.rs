@@ -1,3 +1,5 @@
+use std::fmt::Display;
+
 pub struct Point3d {
     pub x: f32,
     pub y: f32,
@@ -10,14 +12,20 @@ impl Point3d {
     }
 }
 
+impl Display for Point3d {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(format!("({}, {}, {})", self.x, self.y, self.z).as_str())
+    }
+}
+
 pub struct Triangle {
-    pub v1: i32,
-    pub v2: i32,
-    pub v3: i32,
+    pub v1: usize,
+    pub v2: usize,
+    pub v3: usize,
 }
 
 impl Triangle {
-    pub fn new(v1: i32, v2: i32, v3: i32) -> Triangle {
+    pub fn new(v1: usize, v2: usize, v3: usize) -> Triangle {
         Triangle { v1, v2, v3 }
     }
 }
@@ -29,21 +37,11 @@ pub struct Mesh {
 }
 
 impl Mesh {
-    pub fn with_capacity(n_vertices: i32, n_faces: i32) -> Mesh {
+    pub fn new(vertices: Vec<Point3d>, triangles: Vec<Triangle>) -> Mesh {
         Mesh {
-            pos: Vec::<Point3d>::with_capacity(n_vertices as usize),
-            triangles: Vec::<Triangle>::with_capacity(n_faces as usize),
+            pos: vertices,
+            triangles,
         }
-    }
-
-    #[inline]
-    pub fn add_vertex(&mut self, p: Point3d) {
-        self.pos.push(p);
-    }
-
-    #[inline]
-    pub fn add_triangle(&mut self, t: Triangle) {
-        self.triangles.push(t);
     }
 
     #[inline]

@@ -5,7 +5,7 @@ pub fn write_off(mesh: &Mesh) -> String {
     res.push_str(format!("{} {} 0\n", mesh.num_vertices(), mesh.num_triangles()).as_str());
 
     for p in mesh.vertices() {
-        res.push_str(format!("{} {} {}\n", p.x, p.y, p.z).as_str());
+        res.push_str(format!("{:.1} {:.1} {:.1}\n", p.x, p.y, p.z).as_str());
     }
 
     for t in mesh.triangles() {
